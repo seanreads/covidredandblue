@@ -4,36 +4,32 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ==" crossorigin="anonymous" />
         <style>
+            /* global */
+            body { margin: 0 10; }
+            /* menu */
+            fieldset {
+                overflow: hidden;
+            }    
+            label {
+                float: left;
+                clear: none;
+                display: block;
+                padding: '6px 10px 8px 10px';
+            }
+            /* table stuff */
             table {
                 border-collapse:collapse;
             }
-            body { margin: 0 10; }
-            fieldset {
-                overflow: hidden;
+            th, td { 
+                white-space: nowrap;
+                text-align:center;
             }
-    
-            .radio-button-container {
-            float: left;
-            clear: none;
-            }
-    
-            label {
-            float: left;
-            clear: none;
-            display: block;
-            padding: 0px 1em 0px 8px;
-            }
-    
-            input[type=radio],
-            input.radio {
-            float: left;
-            clear: none;
-            margin: 2px 0 0 2px;
+            th.stateName {
+                text-align:left;
             }
 
             .showCell { display: table-cell; }
             .hideCell { display: none; }
-            
         </style>
     </head>
     <body>
@@ -46,20 +42,27 @@
         <script type="text/babel">
         function StatesTable({showCasesOrDeaths}) {
             const [statesData, setStatesData] = React.useState(US_RECORDS);
+            const showOrHideCases = (showCasesOrDeaths) => {
+                return ['cases','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
+
+            }
+            const showOrHideDeaths = (showCasesOrDeaths) => {
+                return ['deaths','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
+            }
             const statesRows = statesData.map((record) => { 
                 return(
                     <tr key={record["State"]}>
-                        <th>{record["State"]}</th>
-                        <td className={['cases','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell'}>{record["NewCases"]}</td>
-                        <td className={['deaths','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell'}>{record["NewDeaths"]}</td>
-                        <td>{record["NewCases_prev6wk"]}</td>
-                        <td>{record["NewDeaths_prev6wk"]}</td>
-                        <td>{record["NewCases_next6wk"]}</td>
-                        <td>{record["NewDeaths_next6wk"]}</td>
-                        <td>{record["Cases"]}</td>
-                        <td>{record["Deaths"]}</td>
-                        <td>{record["Cases_pctPop"]}</td>
-                        <td>{record["Deaths_pctPop"]}</td>
+                        <th className="stateName">{record["State"]}</th>
+                        <td className={showOrHideCases(showCasesOrDeaths)}>{record["NewCases"]}</td>
+                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{record["NewDeaths"]}</td>
+                        <td className={showOrHideCases(showCasesOrDeaths)}>{record["NewCases_prev6wk"]}</td>
+                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{record["NewDeaths_prev6wk"]}</td>
+                        <td className={showOrHideCases(showCasesOrDeaths)}>{record["NewCases_next6wk"]}</td>
+                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{record["NewDeaths_next6wk"]}</td>
+                        <td className={showOrHideCases(showCasesOrDeaths)}>{record["Cases"]}</td>
+                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{record["Deaths"]}</td>
+                        <td className={showOrHideCases(showCasesOrDeaths)}>{record["Cases_pctPop"]}</td>
+                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{record["Deaths_pctPop"]}</td>
                         <td>{record["Population"]}</td>
                         <td>{record["Governor"]}</td>
                     </tr>); 
@@ -71,24 +74,24 @@
                         <tr>
                             <th rowSpan="2"></th>
                             <th colSpan={['casesAndDeaths'].includes(showCasesOrDeaths) ? '2' : '1'}>Daily New</th>
-                            <th colSpan="2">Past 6 Weeks</th>
-                            <th colSpan="2">Next # Weeks</th>
-                            <th colSpan="2">Total</th>
-                            <th colSpan="2">% of Population</th>
+                            <th colSpan={['casesAndDeaths'].includes(showCasesOrDeaths) ? '2' : '1'}>Past 6 Weeks</th>
+                            <th colSpan={['casesAndDeaths'].includes(showCasesOrDeaths) ? '2' : '1'}>Next # Weeks</th>
+                            <th colSpan={['casesAndDeaths'].includes(showCasesOrDeaths) ? '2' : '1'}>Total</th>
+                            <th colSpan={['casesAndDeaths'].includes(showCasesOrDeaths) ? '2' : '1'}>% of Population</th>
                             <th rowSpan="2">Population</th>
                             <th rowSpan="2">Governor</th>
                         </tr>
                         <tr>
-                            <th className={['cases','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell'}>Cases</th>
-                            <th className={['deaths','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell'}>Deaths</th>
-                            <th>Cases</th>
-                            <th>Deaths</th>
-                            <th>Cases</th>
-                            <th>Deaths</th>
-                            <th>Cases</th>
-                            <th>Deaths</th>
-                            <th>Cases</th>
-                            <th>Deaths</th>
+                            <th className={showOrHideCases(showCasesOrDeaths)}>Cases</th>
+                            <th className={showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
+                            <th className={showOrHideCases(showCasesOrDeaths)}>Cases</th>
+                            <th className={showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
+                            <th className={showOrHideCases(showCasesOrDeaths)}>Cases</th>
+                            <th className={showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
+                            <th className={showOrHideCases(showCasesOrDeaths)}>Cases</th>
+                            <th className={showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
+                            <th className={showOrHideCases(showCasesOrDeaths)}>Cases</th>
+                            <th className={showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
                         </tr>                      
                     </thead>
                     <tbody>
@@ -107,14 +110,14 @@
             const [casesOrDeaths, setCasesOrDeaths] = React.useState('casesAndDeaths');
 
             const SelectCasesOrDeaths = () => {
-                return (
+                return(
                     <fieldset>
-                    <div className="radio-button-container">
-                        <legend>Cases, Deaths, or Both</legend>
-                        <input id="cases" type="radio" name="casesDeaths" value="cases" onChange={onChangeCasesOrDeaths} checked={casesOrDeaths == 'cases' ? true : false}/><label htmlFor="cases">Cases</label>
-                        <input id="deaths" type="radio" name="casesDeaths" value="deaths" onChange={onChangeCasesOrDeaths} checked={casesOrDeaths == 'deaths' ? true : false} /><label htmlFor="deaths">Deaths</label>
-                        <input id="casesAndDeaths" type="radio" name="casesDeaths" value="casesAndDeaths" onChange={onChangeCasesOrDeaths} checked={casesOrDeaths == 'casesAndDeaths' ? true : false} /><label htmlFor="casesAndDeaths">Both</label>
-                    </div>
+                        <label style={{fontSize: '16px', padding: '6 10 8 10'}} htmlFor="selectCasesAndDeaths">Show</label>
+                        <select id="selectCasesAndDeaths" onChange={onChangeCasesOrDeaths} value={casesOrDeaths}>
+                            <option value="casesAndDeaths">Cases and Deaths</option>
+                            <option value="cases">Cases Only</option>
+                            <option value="deaths">Deaths Only</option>
+                        </select>
                     </fieldset>
                 )
             }
