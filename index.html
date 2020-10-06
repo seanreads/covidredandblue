@@ -13,31 +13,27 @@
         <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
         <script src="./data/us_records.json"></script>
         <script type="text/babel">
+        const formatNumber = number => numeral(number).format('0,0');
         function StatesTable({showCasesOrDeaths}) {
             const [statesData, setStatesData] = React.useState(US_RECORDS);
-            const showOrHideCases = (showCasesOrDeaths) => {
-                return ['cases','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
-
-            }
-            const showOrHideDeaths = (showCasesOrDeaths) => {
-                return ['deaths','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
-            }
-            const colSpanCasesAndDeaths = (showCasesOrDeaths) => ['casesAndDeaths'].includes(showCasesOrDeaths) ? '2' : '1';
+            const showOrHideCases = showCasesOrDeaths => ['cases','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
+            const showOrHideDeaths = showCasesOrDeaths => ['deaths','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
+            const colSpanCasesAndDeaths = showCasesOrDeaths => ['casesAndDeaths'].includes(showCasesOrDeaths) ? '2' : '1';
             const statesRows = statesData.map((record) => { 
                 return(
                     <tr key={record["State"]}>
                         <th className="stateName">{record["State"]}</th>
-                        <td className={showOrHideCases(showCasesOrDeaths)}>{numeral(record["NewCases"]).format('0,0')}</td>
-                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{numeral(record["NewDeaths"]).format('0,0')}</td>
-                        <td className={showOrHideCases(showCasesOrDeaths)}>{numeral(record["NewCases_prev6wk"]).format('0,0')}</td>
-                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{numeral(record["NewDeaths_prev6wk"]).format('0,0')}</td>
-                        <td className={showOrHideCases(showCasesOrDeaths)}>{numeral(record["NewCases_next6wk"]).format('0,0')}</td>
-                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{numeral(record["NewDeaths_next6wk"]).format('0,0')}</td>
-                        <td className={showOrHideCases(showCasesOrDeaths)}>{numeral(record["Cases"]).format('0,0')}</td>
-                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{numeral(record["Deaths"]).format('0,0')}</td>
+                        <td className={showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["NewCases"])}</td>
+                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["NewDeaths"])}</td>
+                        <td className={showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["NewCases_prev6wk"])}</td>
+                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["NewDeaths_prev6wk"])}</td>
+                        <td className={showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["NewCases_next6wk"])}</td>
+                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["NewDeaths_next6wk"])}</td>
+                        <td className={showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["Cases"])}</td>
+                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["Deaths"])}</td>
                         <td className={showOrHideCases(showCasesOrDeaths)}>{record["Cases_pctPop"]}</td>
                         <td className={showOrHideDeaths(showCasesOrDeaths)}>{record["Deaths_pctPop"]}</td>
-                        <td>{numeral(record["Population"]).format('0,0')}</td>
+                        <td>{formatNumber(record["Population"])}</td>
                         <td>{record["Governor"]}</td>
                     </tr>); 
             });
