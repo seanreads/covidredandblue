@@ -4,12 +4,18 @@ body { margin: 0 10; }
 /* menu */
 fieldset {
     overflow: hidden;
+    float: left;
 }    
 label {
     float: left;
     clear: none;
     display: block;
     padding: 6px 10px 8px 10px;
+    font-size: 18px;
+    font-weight: normal;
+}
+
+strong {
     font-size: 18px;
 }
 
@@ -21,9 +27,50 @@ th, td {
     white-space: nowrap;
     text-align:center;
 }
+
+th.colHeadsOne {
+    border-left: 1px dotted #E1E1E1;
+    border-right: 1px dotted #E1E1E1;
+}
+
+th.colHeadsOne {
+    border-left: 1px dotted #E1E1E1;
+    border-right: 1px solid #E1E1E1;
+}
+
+th.colHeadsCases {
+    border-left: 1px dotted #E1E1E1;
+}
+
+th.colHeadsDeaths {
+    border-right: 1px dotted #E1E1E1;
+}
+
+td.colCellCases {
+    border-left: 1px dotted #E1E1E1;
+}
+
+td.colCellDeaths {
+    border-right: 1px dotted #E1E1E1;
+}
+
+td.colCellPopulation {
+    border-right: 1px dotted #E1E1E1;
+}
+
+td.colCellGovernmentBranch {
+    border-right: 1px solid #E1E1E1;
+}
+
 th.stateName {
     text-align:left;
+    padding-left: 5px;
 }
 
 .showCell { display: table-cell; }
 .hideCell { display: none; }
+
+.rowRepublicanControl { background-color: #ff8080;}
+.rowDemocratControl { background-color: #80b3ff;}
+.rowSplitControl { background-color: #bfbfbf;}
+.rowUnknownControl { background-color: none;}

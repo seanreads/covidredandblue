@@ -14,27 +14,39 @@
         <script src="./data/us_records.json"></script>
         <script type="text/babel">
         const formatNumber = number => numeral(number).format('0,0');
-        function StatesTable({showCasesOrDeaths}) {
+        function StatesTable({showCasesOrDeaths, governmentBranch}) {
             const [statesData, setStatesData] = React.useState(US_RECORDS);
             const showOrHideCases = showCasesOrDeaths => ['cases','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
             const showOrHideDeaths = showCasesOrDeaths => ['deaths','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
             const colSpanCasesAndDeaths = showCasesOrDeaths => ['casesAndDeaths'].includes(showCasesOrDeaths) ? '2' : '1';
+            const rowClassForPartyControl = (partyControl) => { 
+                let className;
+                if (partyControl == 'R')
+                    className = 'rowRepublicanControl';
+                else if (partyControl == 'D')
+                    className = 'rowDemocratControl';
+                else if (partyControl == 'S')
+                    className = 'rowSplitControl'
+                else
+                    className = 'unknownControl'
+                return className;
+            }
             const statesRows = statesData.map((record) => { 
                 return(
-                    <tr key={record["State"]}>
+                    <tr key={record["State"]} className={rowClassForPartyControl(record["Control"])}>
                         <th className="stateName">{record["State"]}</th>
-                        <td className={showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["NewCases"])}</td>
-                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["NewDeaths"])}</td>
-                        <td className={showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["NewCases_prev6wk"])}</td>
-                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["NewDeaths_prev6wk"])}</td>
-                        <td className={showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["NewCases_next6wk"])}</td>
-                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["NewDeaths_next6wk"])}</td>
-                        <td className={showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["Cases"])}</td>
-                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["Deaths"])}</td>
-                        <td className={showOrHideCases(showCasesOrDeaths)}>{record["Cases_pctPop"]}</td>
-                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{record["Deaths_pctPop"]}</td>
-                        <td>{formatNumber(record["Population"])}</td>
-                        <td>{record["Governor"]}</td>
+                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["NewCases"])}</td>
+                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["NewDeaths"])}</td>
+                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["NewCases_prev6wk"])}</td>
+                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["NewDeaths_prev6wk"])}</td>
+                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["NewCases_next6wk"])}</td>
+                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["NewDeaths_next6wk"])}</td>
+                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["Cases"])}</td>
+                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["Deaths"])}</td>
+                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{record["Cases_pctPop"]}</td>
+                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{record["Deaths_pctPop"]}</td>
+                        <td className="colCellPopulation">{formatNumber(record["Population"])}</td>
+                        <td>{record[governmentBranch]}</td>
                     </tr>); 
             });
             
@@ -43,25 +55,25 @@
                     <thead>
                         <tr>
                             <th rowSpan="2"></th>
-                            <th colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Daily New</th>
-                            <th colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Past 6 Weeks</th>
-                            <th colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next # Weeks</th>
-                            <th colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Total</th>
-                            <th colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>% of Population</th>
-                            <th rowSpan="2">Population</th>
-                            <th rowSpan="2">Governor</th>
+                            <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Daily New</th>
+                            <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Past 6 Weeks</th>
+                            <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next # Weeks</th>
+                            <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Total</th>
+                            <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>% of Population</th>
+                            <th className="colHeadsOne" rowSpan="2">Population</th>
+                            <th rowSpan="2">{governmentBranch}</th>
                         </tr>
                         <tr>
-                            <th className={showOrHideCases(showCasesOrDeaths)}>Cases</th>
-                            <th className={showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
-                            <th className={showOrHideCases(showCasesOrDeaths)}>Cases</th>
-                            <th className={showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
-                            <th className={showOrHideCases(showCasesOrDeaths)}>Cases</th>
-                            <th className={showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
-                            <th className={showOrHideCases(showCasesOrDeaths)}>Cases</th>
-                            <th className={showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
-                            <th className={showOrHideCases(showCasesOrDeaths)}>Cases</th>
-                            <th className={showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
+                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>Cases</th>
+                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
+                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>Cases</th>
+                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
+                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>Cases</th>
+                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
+                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>Cases</th>
+                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
+                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>Cases</th>
+                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
                         </tr>                      
                     </thead>
                     <tbody>
@@ -73,12 +85,9 @@
         function App () {
 
             const Heading1 = () => <h1>COVID <span style={{color: "red"}}>Red</span> and <span style={{color: "blue"}}>Blue</span></h1>;
-            function onChangeCasesOrDeaths(event) {
-                setCasesOrDeaths(event.target.value);
-            }
 
             const [casesOrDeaths, setCasesOrDeaths] = React.useState('casesAndDeaths');
-
+            const onChangeCasesOrDeaths = (event) => setCasesOrDeaths(event.target.value);
             const SelectCasesOrDeaths = () => {
                 return(
                     <fieldset>
@@ -91,7 +100,21 @@
                     </fieldset>
                 )
             }
-            return (<><Heading1 /><SelectCasesOrDeaths /><StatesTable showCasesOrDeaths={casesOrDeaths}  /></>)
+
+            const [governmentBranch, setGovernmentBranch] = React.useState('Governor');
+            const onChangeGovernmentBranch = (event) => setGovernmentBranch(event.target.value);
+            const SelectGovernmentBranch = () => {
+                return(
+                    <fieldset>
+                        <label htmlFor="SelectGovernmentBranch">by</label>
+                        <select id="SelectGovernmentBranch" onChange={onChangeGovernmentBranch} value={governmentBranch}>
+                            <option value="Governor">Governor&apos;s</option>
+                            <option value="Legislature">State Legislature&apos;s</option>
+                        </select> <label style={{float: 'right'}}>political party</label>
+                    </fieldset>
+                )
+            }
+            return (<><Heading1 /><SelectCasesOrDeaths /><SelectGovernmentBranch /><StatesTable showCasesOrDeaths={casesOrDeaths} governmentBranch={governmentBranch} /></>)
         }
         ReactDOM.render(<App />, document.getElementById('root'));
         </script>
