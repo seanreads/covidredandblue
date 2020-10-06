@@ -1,0 +1,29 @@
+/* global */
+body { margin: 0 10; }
+
+/* menu */
+fieldset {
+    overflow: hidden;
+}    
+label {
+    float: left;
+    clear: none;
+    display: block;
+    padding: 6px 10px 8px 10px;
+    font-size: 18px;
+}
+
+/* table stuff */
+table {
+    border-collapse:collapse;
+}
+th, td { 
+    white-space: nowrap;
+    text-align:center;
+}
+th.stateName {
+    text-align:left;
+}
+
+.showCell { display: table-cell; }
+.hideCell { display: none; }

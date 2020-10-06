@@ -3,34 +3,7 @@
         <link href='https://fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ==" crossorigin="anonymous" />
-        <style>
-            /* global */
-            body { margin: 0 10; }
-            /* menu */
-            fieldset {
-                overflow: hidden;
-            }    
-            label {
-                float: left;
-                clear: none;
-                display: block;
-                padding: '6px 10px 8px 10px';
-            }
-            /* table stuff */
-            table {
-                border-collapse:collapse;
-            }
-            th, td { 
-                white-space: nowrap;
-                text-align:center;
-            }
-            th.stateName {
-                text-align:left;
-            }
-
-            .showCell { display: table-cell; }
-            .hideCell { display: none; }
-        </style>
+        <link rel="stylesheet" href="application.css" rel='stylesheet' type='text/css' x/>
     </head>
     <body>
         <div id="root"></div>
@@ -49,21 +22,22 @@
             const showOrHideDeaths = (showCasesOrDeaths) => {
                 return ['deaths','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
             }
+            const colSpanCasesAndDeaths = (showCasesOrDeaths) => ['casesAndDeaths'].includes(showCasesOrDeaths) ? '2' : '1';
             const statesRows = statesData.map((record) => { 
                 return(
                     <tr key={record["State"]}>
                         <th className="stateName">{record["State"]}</th>
-                        <td className={showOrHideCases(showCasesOrDeaths)}>{record["NewCases"]}</td>
-                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{record["NewDeaths"]}</td>
-                        <td className={showOrHideCases(showCasesOrDeaths)}>{record["NewCases_prev6wk"]}</td>
-                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{record["NewDeaths_prev6wk"]}</td>
-                        <td className={showOrHideCases(showCasesOrDeaths)}>{record["NewCases_next6wk"]}</td>
-                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{record["NewDeaths_next6wk"]}</td>
-                        <td className={showOrHideCases(showCasesOrDeaths)}>{record["Cases"]}</td>
-                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{record["Deaths"]}</td>
+                        <td className={showOrHideCases(showCasesOrDeaths)}>{numeral(record["NewCases"]).format('0,0')}</td>
+                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{numeral(record["NewDeaths"]).format('0,0')}</td>
+                        <td className={showOrHideCases(showCasesOrDeaths)}>{numeral(record["NewCases_prev6wk"]).format('0,0')}</td>
+                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{numeral(record["NewDeaths_prev6wk"]).format('0,0')}</td>
+                        <td className={showOrHideCases(showCasesOrDeaths)}>{numeral(record["NewCases_next6wk"]).format('0,0')}</td>
+                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{numeral(record["NewDeaths_next6wk"]).format('0,0')}</td>
+                        <td className={showOrHideCases(showCasesOrDeaths)}>{numeral(record["Cases"]).format('0,0')}</td>
+                        <td className={showOrHideDeaths(showCasesOrDeaths)}>{numeral(record["Deaths"]).format('0,0')}</td>
                         <td className={showOrHideCases(showCasesOrDeaths)}>{record["Cases_pctPop"]}</td>
                         <td className={showOrHideDeaths(showCasesOrDeaths)}>{record["Deaths_pctPop"]}</td>
-                        <td>{record["Population"]}</td>
+                        <td>{numeral(record["Population"]).format('0,0')}</td>
                         <td>{record["Governor"]}</td>
                     </tr>); 
             });
@@ -73,11 +47,11 @@
                     <thead>
                         <tr>
                             <th rowSpan="2"></th>
-                            <th colSpan={['casesAndDeaths'].includes(showCasesOrDeaths) ? '2' : '1'}>Daily New</th>
-                            <th colSpan={['casesAndDeaths'].includes(showCasesOrDeaths) ? '2' : '1'}>Past 6 Weeks</th>
-                            <th colSpan={['casesAndDeaths'].includes(showCasesOrDeaths) ? '2' : '1'}>Next # Weeks</th>
-                            <th colSpan={['casesAndDeaths'].includes(showCasesOrDeaths) ? '2' : '1'}>Total</th>
-                            <th colSpan={['casesAndDeaths'].includes(showCasesOrDeaths) ? '2' : '1'}>% of Population</th>
+                            <th colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Daily New</th>
+                            <th colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Past 6 Weeks</th>
+                            <th colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next # Weeks</th>
+                            <th colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Total</th>
+                            <th colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>% of Population</th>
                             <th rowSpan="2">Population</th>
                             <th rowSpan="2">Governor</th>
                         </tr>
@@ -112,7 +86,7 @@
             const SelectCasesOrDeaths = () => {
                 return(
                     <fieldset>
-                        <label style={{fontSize: '16px', padding: '6 10 8 10'}} htmlFor="selectCasesAndDeaths">Show</label>
+                        <label htmlFor="selectCasesAndDeaths">Show</label>
                         <select id="selectCasesAndDeaths" onChange={onChangeCasesOrDeaths} value={casesOrDeaths}>
                             <option value="casesAndDeaths">Cases and Deaths</option>
                             <option value="cases">Cases Only</option>
