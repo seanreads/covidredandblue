@@ -15,6 +15,12 @@ label {
     font-weight: normal;
 }
 
+input[type=checkbox] { 
+    vertical-align: middle; 
+    position: relative; 
+    bottom: -12px; 
+} 
+
 strong {
     font-size: 18px;
 }

@@ -15,8 +15,7 @@
         <script src="./data/us_records.json"></script>
         <script type="text/babel">
         const formatNumber = number => numeral(number).format('0,0');
-        function StatesTable({showCasesOrDeaths, governmentBranch, nextNumberOfWeeks}) {
-            console.log(nextNumberOfWeeks);
+        function StatesTable({showCasesOrDeaths, governmentBranch, nextNumberOfWeeks, showPer100k, show7DayAvg}) {
             const [statesData, setStatesData] = React.useState(US_RECORDS);
             const showOrHideCases = showCasesOrDeaths => ['cases','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
             const showOrHideDeaths = showCasesOrDeaths => ['deaths','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
@@ -106,7 +105,7 @@
             }
 
             const [governmentBranch, setGovernmentBranch] = React.useState('Governor');
-            const onChangeGovernmentBranch = (event) => setGovernmentBranch(event.target.value);
+            const onChangeGovernmentBranch = event => setGovernmentBranch(event.target.value);
             const SelectGovernmentBranch = () => {
                 return(
                     <fieldset>
@@ -119,10 +118,10 @@
                 )
             }
             const [nextNumberOfWeeks, setNextNumberOfWeeks] = React.useState('1');
-            const onChangeNextNumberOfWeeks = (event) => setNextNumberOfWeeks(event.target.value);
+            const onChangeNextNumberOfWeeks = event => setNextNumberOfWeeks(event.target.value);
             const SelectNextNumberOfWeeks = () => {
                 return(
-                    <fieldset>
+                    <fieldset style={{paddingRight: '10px'}}>
                         <label style={{paddingLeft: '0px'}} htmlFor="SelectNextNumberOfWeeks">for next</label>
                         <select id="SelectNextNumberOfWeeks" onChange={onChangeNextNumberOfWeeks} value={nextNumberOfWeeks}>
                             <option value="1">1 week</option>
@@ -135,13 +134,30 @@
                     </fieldset>
                 )
             }
+            const [showPer100k, setShowPer100k] = React.useState(false);
+            const onChangePer100k = event => setShowPer100k(event.target.checked);
+            const CheckboxPer100k = () => {
+                return(<fieldset>
+                            <label style={{float: 'right', paddingLeft: '3px'}} htmlFor="CheckboxPer100k">per 100K</label>
+                            <input id="CheckboxPer100k" onChange={onChangePer100k} type="checkbox" checked={showPer100k} />
+                        </fieldset>)
+            }
+            const [show7DayAvg, setShow7DayAvg] = React.useState(false);
+            const onChange7DayAvg = event => setShow7DayAvg(event.target.checked);
+            const Checkbox7DayAvg = () => {
+                return(<fieldset>
+                            <label style={{float: 'right', paddingLeft: '3px'}} htmlFor="Checkbox7DayAvg">7-day average</label>
+                            <input id="Checkbox7DayAvg" onChange={onChange7DayAvg} type="checkbox" checked={show7DayAvg} />
+                        </fieldset>)
+            }
             return (<>
                         <Heading1 />
-                        <SelectCasesOrDeaths /><SelectGovernmentBranch /><SelectNextNumberOfWeeks />
+                        <SelectCasesOrDeaths /><SelectGovernmentBranch /><SelectNextNumberOfWeeks /><CheckboxPer100k /><Checkbox7DayAvg />
                         <StatesTable 
                             showCasesOrDeaths={casesOrDeaths} 
                             governmentBranch={governmentBranch} 
-                            nextNumberOfWeeks={nextNumberOfWeeks} />
+                            nextNumberOfWeeks={nextNumberOfWeeks}
+                            showPer100k={showPer100k} show7DayAvg={show7DayAvg} />
                     </>)
         }
         ReactDOM.render(<App />, document.getElementById('root'));
