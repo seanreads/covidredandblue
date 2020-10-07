@@ -13,13 +13,19 @@ label {
     padding: 6px 10px 8px 10px;
     font-size: 18px;
     font-weight: normal;
+    cursor: pointer;
 }
 
 input[type=checkbox] { 
     vertical-align: middle; 
     position: relative; 
     bottom: -12px; 
+    cursor: pointer;
 } 
+
+select, option {
+    cursor: pointer;
+}
 
 strong {
     font-size: 18px;
