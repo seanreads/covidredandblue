@@ -15,7 +15,8 @@
         <script src="./data/us_records.json"></script>
         <script type="text/babel">
         const formatNumber = number => numeral(number).format('0,0');
-        function StatesTable({showCasesOrDeaths, governmentBranch}) {
+        function StatesTable({showCasesOrDeaths, governmentBranch, nextNumberOfWeeks}) {
+            console.log(nextNumberOfWeeks);
             const [statesData, setStatesData] = React.useState(US_RECORDS);
             const showOrHideCases = showCasesOrDeaths => ['cases','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
             const showOrHideDeaths = showCasesOrDeaths => ['deaths','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
@@ -33,6 +34,8 @@
                 return className;
             }
             const statesRows = statesData.map((record) => { 
+                const newCasesNextWeeks = `NewCases_next${nextNumberOfWeeks}wk`;
+                const newDeathsNextWeeks = `NewDeaths_next${nextNumberOfWeeks}wk`;
                 return(
                     <tr key={record["State"]} className={rowClassForPartyControl(record["Control"])}>
                         <th className="stateName">{record["State"]}</th>
@@ -40,8 +43,8 @@
                         <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["NewDeaths"])}</td>
                         <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["NewCases_prev6wk"])}</td>
                         <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["NewDeaths_prev6wk"])}</td>
-                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["NewCases_next6wk"])}</td>
-                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["NewDeaths_next6wk"])}</td>
+                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesNextWeeks])}</td>
+                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsNextWeeks])}</td>
                         <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["Cases"])}</td>
                         <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["Deaths"])}</td>
                         <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{record["Cases_pctPop"]}</td>
@@ -58,7 +61,7 @@
                             <th rowSpan="2"></th>
                             <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Daily New</th>
                             <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Past 6 Weeks</th>
-                            <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next # Weeks</th>
+                            <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next {nextNumberOfWeeks} Week{nextNumberOfWeeks > 1 ? 's' : ''}</th>
                             <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Total</th>
                             <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>% of Population</th>
                             <th className="colHeadsOne" rowSpan="2">Population</th>
@@ -92,7 +95,7 @@
             const SelectCasesOrDeaths = () => {
                 return(
                     <fieldset>
-                        <label htmlFor="selectCasesAndDeaths">Show</label>
+                        <label style={{paddingLeft: '0px'}} htmlFor="selectCasesAndDeaths">Show</label>
                         <select id="selectCasesAndDeaths" onChange={onChangeCasesOrDeaths} value={casesOrDeaths}>
                             <option value="casesAndDeaths">Cases and Deaths</option>
                             <option value="cases">Cases Only</option>
@@ -107,15 +110,39 @@
             const SelectGovernmentBranch = () => {
                 return(
                     <fieldset>
-                        <label htmlFor="SelectGovernmentBranch">by</label>
+                        <label style={{paddingLeft:'0px'}} htmlFor="SelectGovernmentBranch">by</label>
                         <select id="SelectGovernmentBranch" onChange={onChangeGovernmentBranch} value={governmentBranch}>
                             <option value="Governor">Governor&apos;s</option>
                             <option value="Legislature">State Legislature&apos;s</option>
-                        </select> <label style={{float: 'right'}}>political party</label>
+                        </select> <label style={{float: 'right', paddingRight: '0px'}}>political party</label>
                     </fieldset>
                 )
             }
-            return (<><Heading1 /><SelectCasesOrDeaths /><SelectGovernmentBranch /><StatesTable showCasesOrDeaths={casesOrDeaths} governmentBranch={governmentBranch} /></>)
+            const [nextNumberOfWeeks, setNextNumberOfWeeks] = React.useState('1');
+            const onChangeNextNumberOfWeeks = (event) => setNextNumberOfWeeks(event.target.value);
+            const SelectNextNumberOfWeeks = () => {
+                return(
+                    <fieldset>
+                        <label style={{paddingLeft: '0px'}} htmlFor="SelectNextNumberOfWeeks">for next</label>
+                        <select id="SelectNextNumberOfWeeks" onChange={onChangeNextNumberOfWeeks} value={nextNumberOfWeeks}>
+                            <option value="1">1 week</option>
+                            <option value="2">2 weeks</option>
+                            <option value="3">3 weeks</option>
+                            <option value="4">4 weeks</option>
+                            <option value="5">5 weeks</option>
+                            <option value="6">6 weeks</option>
+                        </select>
+                    </fieldset>
+                )
+            }
+            return (<>
+                        <Heading1 />
+                        <SelectCasesOrDeaths /><SelectGovernmentBranch /><SelectNextNumberOfWeeks />
+                        <StatesTable 
+                            showCasesOrDeaths={casesOrDeaths} 
+                            governmentBranch={governmentBranch} 
+                            nextNumberOfWeeks={nextNumberOfWeeks} />
+                    </>)
         }
         ReactDOM.render(<App />, document.getElementById('root'));
         </script>
