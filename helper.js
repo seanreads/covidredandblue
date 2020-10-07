@@ -1,6 +1,10 @@
 const formatNumber = (number,mask) => numeral(number).format(mask);
 const formatPercentage = (number,mask) => numeral(number).format(mask);
 
+const showOrHideCases = showCasesOrDeaths => ['cases','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
+const showOrHideDeaths = showCasesOrDeaths => ['deaths','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
+const colSpanCasesAndDeaths = showCasesOrDeaths => ['casesAndDeaths'].includes(showCasesOrDeaths) ? '2' : '1';
+
 const rowClassForPartyControl = (partyControl) => { 
     let className;
     if (partyControl == 'R')

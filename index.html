@@ -17,9 +17,6 @@
         <script type="text/babel">
         function StatesTable({showCasesOrDeaths, governmentBranch, nextNumberOfWeeks, showPer100k, show7DayAvg}) {
             const [statesData, setStatesData] = React.useState(US_RECORDS);
-            const showOrHideCases = showCasesOrDeaths => ['cases','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
-            const showOrHideDeaths = showCasesOrDeaths => ['deaths','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
-            const colSpanCasesAndDeaths = showCasesOrDeaths => ['casesAndDeaths'].includes(showCasesOrDeaths) ? '2' : '1';
             const statesRows = statesData.map((record) => { 
                 const newCasesNextWeeksKey = getNewCasesNextWeeksKey(nextNumberOfWeeks);
                 const newDeathsNextWeeksKey = getNewDeathsNextWeeksKey(nextNumberOfWeeks);
