@@ -18,21 +18,25 @@
         function StatesTable({showCasesOrDeaths, governmentBranch, nextNumberOfWeeks, showPer100k, show7DayAvg}) {
             const [statesData, setStatesData] = React.useState(US_RECORDS);
             const statesRows = statesData.map((record) => { 
-                const newCasesNextWeeksKey = getNewCasesNextWeeksKey(nextNumberOfWeeks);
-                const newDeathsNextWeeksKey = getNewDeathsNextWeeksKey(nextNumberOfWeeks);
+                const newCasesNextWeeksKey = getNewCasesNextWeeksKey(nextNumberOfWeeks, showPer100k);
+                const newDeathsNextWeeksKey = getNewDeathsNextWeeksKey(nextNumberOfWeeks, showPer100k);
                 const newCasesKey = getNewCasesKey(showPer100k, show7DayAvg);
                 const newDeathsKey = getNewDeathsKey(showPer100k, show7DayAvg);
+                const newCasesPrev6WeeksKey = getNewCasesPrev6WeeksKey(showPer100k);
+                const newDeathsPrev6WeeksKey = getNewDeathsPrev6WeeksKey(showPer100k);
+                const totalCasesKey = getTotalCasesKey(showPer100k);
+                const totalDeathsKey = getTotalDeathsKey(showPer100k);
                 return(
                     <tr key={record["State"]} className={rowClassForPartyControl(record["Control"])}>
                         <th className="stateName">{record["State"]}</th>
                         <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesKey],'0,0.00')}</td>
                         <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsKey],'0,0.00')}</td>
-                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["NewCases_prev6wk"],'0,0.00')}</td>
-                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["NewDeaths_prev6wk"],'0,0.00')}</td>
+                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesPrev6WeeksKey],'0,0.00')}</td>
+                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsPrev6WeeksKey],'0,0.00')}</td>
                         <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesNextWeeksKey],'0,0.00')}</td>
                         <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsNextWeeksKey],'0,0.00')}</td>
-                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["Cases"],'0,0.00')}</td>
-                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["Deaths"],'0,0.00')}</td>
+                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[totalCasesKey],'0,0.00')}</td>
+                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[totalDeathsKey],'0,0.00')}</td>
                         <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatPercentage(record["Cases_pctPop"],'0,0.00')}</td>
                         <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatPercentage(record["Deaths_pctPop"],'0,0.00')}</td>
                         <td className="colCellPopulation">{formatNumber(record["Population"],'0,0')}</td>

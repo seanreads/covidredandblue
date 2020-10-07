@@ -18,8 +18,11 @@ const rowClassForPartyControl = (partyControl) => {
     return className;
 }
 
-const getNewCasesNextWeeksKey = nextNumberOfWeeks => `NewCases_next${nextNumberOfWeeks}wk`;
-const getNewDeathsNextWeeksKey = nextNumberOfWeeks => `NewDeaths_next${nextNumberOfWeeks}wk`;
+const getNewCasesPrev6WeeksKey = showPer100k => showPer100k ? 'NewCases_prev6wk_100k' : 'NewCases_prev6wk';
+const getNewDeathsPrev6WeeksKey = showPer100k => showPer100k ? 'NewDeaths_prev6wk_100k' : 'NewCases_prev6wk';
+
+const getNewCasesNextWeeksKey = (nextNumberOfWeeks, showPer100k) => showPer100k ? `NewCases_next${nextNumberOfWeeks}wk_100k` : `NewCases_next${nextNumberOfWeeks}wk`;
+const getNewDeathsNextWeeksKey = (nextNumberOfWeeks, showPer100k) => showPer100k ? `NewDeaths_next${nextNumberOfWeeks}wk_100k` : `NewDeaths_next${nextNumberOfWeeks}wk`;
 
 const getNewCasesKey = (showPer100k, show7DayAvg) => {
     let newCasesKey = '';
@@ -46,3 +49,6 @@ const getNewDeathsKey = (showPer100k, show7DayAvg) => {
         newDeathsKey = 'NewDeaths';
     return newDeathsKey;
 }
+
+const getTotalCasesKey = showPer100k => showPer100k ? 'Cases_100k' : 'Cases';
+const getTotalDeathsKey = showPer100k => showPer100k ? 'Deaths_100k' : 'Deaths';
