@@ -12,43 +12,33 @@
         <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
         <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
         <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+        <script src="./helper.js"></script>
         <script src="./data/us_records.json"></script>
         <script type="text/babel">
-        const formatNumber = number => numeral(number).format('0,0');
         function StatesTable({showCasesOrDeaths, governmentBranch, nextNumberOfWeeks, showPer100k, show7DayAvg}) {
             const [statesData, setStatesData] = React.useState(US_RECORDS);
             const showOrHideCases = showCasesOrDeaths => ['cases','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
             const showOrHideDeaths = showCasesOrDeaths => ['deaths','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
             const colSpanCasesAndDeaths = showCasesOrDeaths => ['casesAndDeaths'].includes(showCasesOrDeaths) ? '2' : '1';
-            const rowClassForPartyControl = (partyControl) => { 
-                let className;
-                if (partyControl == 'R')
-                    className = 'rowRepublicanControl';
-                else if (partyControl == 'D')
-                    className = 'rowDemocratControl';
-                else if (partyControl == 'S')
-                    className = 'rowSplitControl'
-                else
-                    className = 'unknownControl'
-                return className;
-            }
             const statesRows = statesData.map((record) => { 
-                const newCasesNextWeeks = `NewCases_next${nextNumberOfWeeks}wk`;
-                const newDeathsNextWeeks = `NewDeaths_next${nextNumberOfWeeks}wk`;
+                const newCasesNextWeeksKey = getNewCasesNextWeeksKey(nextNumberOfWeeks);
+                const newDeathsNextWeeksKey = getNewDeathsNextWeeksKey(nextNumberOfWeeks);
+                const newCasesKey = getNewCasesKey(showPer100k, show7DayAvg);
+                const newDeathsKey = getNewDeathsKey(showPer100k, show7DayAvg);
                 return(
                     <tr key={record["State"]} className={rowClassForPartyControl(record["Control"])}>
                         <th className="stateName">{record["State"]}</th>
-                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["NewCases"])}</td>
-                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["NewDeaths"])}</td>
-                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["NewCases_prev6wk"])}</td>
-                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["NewDeaths_prev6wk"])}</td>
-                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesNextWeeks])}</td>
-                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsNextWeeks])}</td>
-                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["Cases"])}</td>
-                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["Deaths"])}</td>
-                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{record["Cases_pctPop"]}</td>
-                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{record["Deaths_pctPop"]}</td>
-                        <td className="colCellPopulation">{formatNumber(record["Population"])}</td>
+                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesKey],'0,0.00')}</td>
+                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsKey],'0,0.00')}</td>
+                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["NewCases_prev6wk"],'0,0.00')}</td>
+                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["NewDeaths_prev6wk"],'0,0.00')}</td>
+                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesNextWeeksKey],'0,0.00')}</td>
+                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsNextWeeksKey],'0,0.00')}</td>
+                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record["Cases"],'0,0.00')}</td>
+                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record["Deaths"],'0,0.00')}</td>
+                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatPercentage(record["Cases_pctPop"],'0,0.00')}</td>
+                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatPercentage(record["Deaths_pctPop"],'0,0.00')}</td>
+                        <td className="colCellPopulation">{formatNumber(record["Population"],'0,0')}</td>
                         <td>{record[governmentBranch]}</td>
                     </tr>); 
             });
