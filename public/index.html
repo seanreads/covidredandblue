@@ -29,7 +29,10 @@
             const statesRows = statesData.map((record) => { 
                 return(
                     <tr key={record["State"]} className={rowClassForPartyControl(record["Control"])}>
-                        <th className="stateName">{record["State"]}</th>
+                        <th className="stateName">
+                            <div>{record["State"]}</div>
+                            <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(record["Population"],'0,0')}</span></div>
+                        </th>
                         <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesKey],'0,0.00')}</td>
                         <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsKey],'0,0.00')}</td>
                         <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesPrev6WeeksKey],'0,0.00')}</td>
@@ -38,14 +41,11 @@
                         <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsNextWeeksKey],'0,0.00')}</td>
                         <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[totalCasesKey],'0,0.00')}</td>
                         <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[totalDeathsKey],'0,0.00')}</td>
-                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatPercentage(record["Cases_pctPop"],'0,0.00')}</td>
-                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatPercentage(record["Deaths_pctPop"],'0,0.00')}</td>
-                        <td className="colCellPopulation">{formatNumber(record["Population"],'0,0')}</td>
                         <td>{record[governmentBranch]}</td>
                     </tr>); 
             });
-            const sortStatesDataBy = prop => {
-                const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: true};
+            const sortStatesDataBy = (prop, ascending = true) => {
+                const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: ascending};
                 setStatesDataSortOrder({...statesDataSortOrder, ...propSortOrder});
                 let sortedData = [...statesData].sort((a, b) => a[prop] > b[prop] ? 1 : -1);
                 if (propSortOrder[prop] == false) sortedData.reverse();
@@ -62,13 +62,16 @@
                 <table className="u-full-width">
                     <thead>
                         <tr>
-                            <th rowSpan="2"></th>
+                            <th style={{textAlign: 'left', paddingLeft: '5px'}} rowSpan="2">
+                                <div>
+                                    <div><a onClick={() => sortStatesDataBy("State", false)}>State</a> </div>
+                                    <div><span style={{fontWeight: 'normal', fontSize: '0.85em'}}><a onClick={() => sortStatesDataBy("Population")}>Population</a></span></div>
+                                </div>
+                            </th>
                             <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Daily New</th>
                             <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Past 6 Weeks</th>
                             <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next {nextNumberOfWeeks} Week{nextNumberOfWeeks > 1 ? 's' : ''}</th>
-                            <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Total</th>
-                            <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>% of Population</th>
-                            <th className="colHeadsOne" rowSpan="2"><a onClick={() => sortStatesDataBy('Population')}>Population</a></th>
+                            <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Total to Date</th>
                             <th rowSpan="2"><a onClick={() => sortStatesDataByGovernmentBranch(governmentBranch)}>{governmentBranch}</a></th>
                         </tr>
                         <tr>
@@ -95,12 +98,6 @@
                             </th>
                             <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
                                 <a onClick={() => sortStatesDataBy(totalDeathsKey)}>Deaths</a>
-                            </th>
-                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
-                                <a onClick={() => sortStatesDataBy("Cases_pctPop")}>Cases</a>
-                            </th>
-                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
-                                <a onClick={() => sortStatesDataBy("Deaths_pctPop")}>Deaths</a>
                             </th>
                         </tr>                      
                     </thead>
@@ -134,11 +131,11 @@
             const SelectGovernmentBranch = () => {
                 return(
                     <fieldset>
-                        <label style={{paddingLeft:'0px'}} htmlFor="SelectGovernmentBranch">by</label>
+                        <label style={{paddingLeft:'0px'}} htmlFor="SelectGovernmentBranch">by political party of</label>
                         <select id="SelectGovernmentBranch" onChange={onChangeGovernmentBranch} value={governmentBranch}>
-                            <option value="Governor">Governor&apos;s</option>
-                            <option value="Legislature">State Legislature&apos;s</option>
-                        </select> <label style={{float: 'right', paddingRight: '0px'}}>political party</label>
+                            <option value="Governor">Governor</option>
+                            <option value="Legislature">State Legislature</option>
+                        </select>
                     </fieldset>
                 )
             }

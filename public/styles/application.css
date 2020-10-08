@@ -86,6 +86,12 @@ th.stateName {
     padding-left: 5px;
 }
 
+div.populationLabel, div.populationLabel a {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 0.85em;
+}
+
 .showCell { display: table-cell; }
 .hideCell { display: none; }
 
