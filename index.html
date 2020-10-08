@@ -17,15 +17,16 @@
         <script type="text/babel">
         function StatesTable({showCasesOrDeaths, governmentBranch, nextNumberOfWeeks, showPer100k, show7DayAvg}) {
             const [statesData, setStatesData] = React.useState(US_RECORDS);
+            const [statesDataSortOrder, setStatesDataSortOrder] = React.useState({});
+            const newCasesNextWeeksKey = getNewCasesNextWeeksKey(nextNumberOfWeeks, showPer100k);
+            const newDeathsNextWeeksKey = getNewDeathsNextWeeksKey(nextNumberOfWeeks, showPer100k);
+            const newCasesKey = getNewCasesKey(showPer100k, show7DayAvg);
+            const newDeathsKey = getNewDeathsKey(showPer100k, show7DayAvg);
+            const newCasesPrev6WeeksKey = getNewCasesPrev6WeeksKey(showPer100k);
+            const newDeathsPrev6WeeksKey = getNewDeathsPrev6WeeksKey(showPer100k);
+            const totalCasesKey = getTotalCasesKey(showPer100k);
+            const totalDeathsKey = getTotalDeathsKey(showPer100k);
             const statesRows = statesData.map((record) => { 
-                const newCasesNextWeeksKey = getNewCasesNextWeeksKey(nextNumberOfWeeks, showPer100k);
-                const newDeathsNextWeeksKey = getNewDeathsNextWeeksKey(nextNumberOfWeeks, showPer100k);
-                const newCasesKey = getNewCasesKey(showPer100k, show7DayAvg);
-                const newDeathsKey = getNewDeathsKey(showPer100k, show7DayAvg);
-                const newCasesPrev6WeeksKey = getNewCasesPrev6WeeksKey(showPer100k);
-                const newDeathsPrev6WeeksKey = getNewDeathsPrev6WeeksKey(showPer100k);
-                const totalCasesKey = getTotalCasesKey(showPer100k);
-                const totalDeathsKey = getTotalDeathsKey(showPer100k);
                 return(
                     <tr key={record["State"]} className={rowClassForPartyControl(record["Control"])}>
                         <th className="stateName">{record["State"]}</th>
@@ -43,7 +44,20 @@
                         <td>{record[governmentBranch]}</td>
                     </tr>); 
             });
-            
+            const sortStatesDataBy = prop => {
+                const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: true};
+                setStatesDataSortOrder({...statesDataSortOrder, ...propSortOrder});
+                let sortedData = [...statesData].sort((a, b) => a[prop] > b[prop] ? 1 : -1);
+                if (propSortOrder[prop] == false) sortedData.reverse();
+                setStatesData(sortedData);
+            };
+            const sortStatesDataByGovernmentBranch = prop => {
+                const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: true};
+                setStatesDataSortOrder({...statesDataSortOrder, ...propSortOrder});
+                let sortedData = [...statesData].sort((a, b) => a[prop] > b[prop] ? 1 : (a[prop] == b[prop]) ? ((a['Control'] > b['Control']) ? 1 : -1) : -1);
+                if (propSortOrder[prop] == false) sortedData.reverse();
+                setStatesData(sortedData);
+            };
             return (
                 <table className="u-full-width">
                     <thead>
@@ -54,20 +68,40 @@
                             <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next {nextNumberOfWeeks} Week{nextNumberOfWeeks > 1 ? 's' : ''}</th>
                             <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Total</th>
                             <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>% of Population</th>
-                            <th className="colHeadsOne" rowSpan="2">Population</th>
-                            <th rowSpan="2">{governmentBranch}</th>
+                            <th className="colHeadsOne" rowSpan="2"><a onClick={() => sortStatesDataBy('Population')}>Population</a></th>
+                            <th rowSpan="2"><a onClick={() => sortStatesDataByGovernmentBranch(governmentBranch)}>{governmentBranch}</a></th>
                         </tr>
                         <tr>
-                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>Cases</th>
-                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
-                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>Cases</th>
-                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
-                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>Cases</th>
-                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
-                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>Cases</th>
-                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
-                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>Cases</th>
-                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>Deaths</th>
+                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                                <a onClick={() => sortStatesDataBy(newCasesKey)}>Cases</a>
+                            </th>
+                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
+                                <a onClick={() => sortStatesDataBy(newDeathsKey)}>Deaths</a>
+                            </th>
+                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                                <a onClick={() => sortStatesDataBy(newCasesPrev6WeeksKey)}>Cases</a>
+                            </th>
+                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
+                                <a onClick={() => sortStatesDataBy(newDeathsPrev6WeeksKey)}>Deaths</a>
+                            </th>
+                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                                <a onClick={() => sortStatesDataBy(newCasesNextWeeksKey)}>Cases</a>
+                            </th>
+                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
+                                <a onClick={() => sortStatesDataBy(newDeathsNextWeeksKey)}>Deaths</a>
+                            </th>
+                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                                <a onClick={() => sortStatesDataBy(totalCasesKey)}>Cases</a>
+                            </th>
+                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
+                                <a onClick={() => sortStatesDataBy(totalDeathsKey)}>Deaths</a>
+                            </th>
+                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                                <a onClick={() => sortStatesDataBy("Cases_pctPop")}>Cases</a>
+                            </th>
+                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
+                                <a onClick={() => sortStatesDataBy("Deaths_pctPop")}>Deaths</a>
+                            </th>
                         </tr>                      
                     </thead>
                     <tbody>

@@ -1,5 +1,5 @@
-const formatNumber = (number,mask) => numeral(number).format(mask);
-const formatPercentage = (number,mask) => numeral(number).format(mask);
+const formatNumber = (number,mask) => isNaN(number) ? '--' : numeral(number).format(mask);
+const formatPercentage = (number,mask) => isNaN(number) ? '--' : numeral(number).format(mask);
 
 const showOrHideCases = showCasesOrDeaths => ['cases','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
 const showOrHideDeaths = showCasesOrDeaths => ['deaths','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
@@ -19,7 +19,7 @@ const rowClassForPartyControl = (partyControl) => {
 }
 
 const getNewCasesPrev6WeeksKey = showPer100k => showPer100k ? 'NewCases_prev6wk_100k' : 'NewCases_prev6wk';
-const getNewDeathsPrev6WeeksKey = showPer100k => showPer100k ? 'NewDeaths_prev6wk_100k' : 'NewCases_prev6wk';
+const getNewDeathsPrev6WeeksKey = showPer100k => showPer100k ? 'NewDeaths_prev6wk_100k' : 'NewDeaths_prev6wk';
 
 const getNewCasesNextWeeksKey = (nextNumberOfWeeks, showPer100k) => showPer100k ? `NewCases_next${nextNumberOfWeeks}wk_100k` : `NewCases_next${nextNumberOfWeeks}wk`;
 const getNewDeathsNextWeeksKey = (nextNumberOfWeeks, showPer100k) => showPer100k ? `NewDeaths_next${nextNumberOfWeeks}wk_100k` : `NewDeaths_next${nextNumberOfWeeks}wk`;
