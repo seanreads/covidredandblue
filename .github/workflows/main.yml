@@ -10,11 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@master
-      - name: Download Artifact
-        uses: actions/download-artifact@master
+        uses: actions/checkout@main
         with:
-          name: public
+          ref: main
           path: public
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@v1.5.0
