@@ -20,16 +20,10 @@
         function StatesTable({showCasesOrDeaths, governmentBranch, showPer100k}) {
             const [statesData, setStatesData] = React.useState(US_RECORDS);
             const [statesDataSortOrder, setStatesDataSortOrder] = React.useState({});
-            // const newCasesNextWeeksKey = getNewCasesNextWeeksKey(nextNumberOfWeeks, showPer100k);
-            // const newDeathsNextWeeksKey = getNewDeathsNextWeeksKey(nextNumberOfWeeks, showPer100k);
             const [show7DayAvg, setShow7DayAvg] = React.useState(false);
             const onClickShowSevenDayAvg = value => setShow7DayAvg(value); 
             const newCasesKey = getNewCasesKey(showPer100k, show7DayAvg);
             const newDeathsKey = getNewDeathsKey(showPer100k, show7DayAvg);
-            // const newCasesPrev6WeeksKey = getNewCasesPrev6WeeksKey(showPer100k);
-            // const newDeathsPrev6WeeksKey = getNewDeathsPrev6WeeksKey(showPer100k);
-            // const newCasesPrevWeeksKey = getNewCasesPrevWeeksKey(showPer100k);
-            // const newDeathsPrevWeeksKey = getNewDeathsPrevWeeksKey(showPer100k);
             const totalCasesKey = getTotalCasesKey(showPer100k);
             const totalDeathsKey = getTotalDeathsKey(showPer100k);
             const SelectSevenDayAverage = () => {
@@ -59,7 +53,7 @@
             }            
             const statesRows = statesData.map((record) => { 
                 return(
-                    <tr key={record["State"]} className={rowClassForPartyControl(record["Control"])}>
+                    <tr key={record["State"]} className={rowClassForPartyControl(record["Control"])+ (record[governmentBranch] == 'NA' ? ' disabled' : '')}>
                         <th className="stateName">
                             <div>{record["State"]}</div>
                             <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(record["Population"],'0,0')}</span></div>
