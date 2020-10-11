@@ -117,31 +117,42 @@
             const Heading1 = () => <h1>COVID <span style={{color: "red"}}>Red</span> and <span style={{color: "blue"}}>Blue</span></h1>;
 
             const [casesOrDeaths, setCasesOrDeaths] = React.useState('casesAndDeaths');
-            const onChangeCasesOrDeaths = (event) => setCasesOrDeaths(event.target.value);
-            // const SelectCasesOrDeaths = () => {
-            //     return(
-            //         <fieldset>
-            //             <label style={{paddingLeft: '0px'}} htmlFor="selectCasesAndDeaths">Show</label>
-            //             <select id="selectCasesAndDeaths" onChange={onChangeCasesOrDeaths} value={casesOrDeaths}>
-            //                 <option value="casesAndDeaths">Cases and Deaths</option>
-            //                 <option value="cases">Cases Only</option>
-            //                 <option value="deaths">Deaths Only</option>
-            //             </select>
-            //         </fieldset>
-            //     )
-            // }
-
             const onClickCasesOrDeaths = (value) => setCasesOrDeaths(value)
 
             const SelectCasesOrDeaths = () => {
                 return(
                         <div class="ui buttons">
-                            <button onClick={() => onClickCasesOrDeaths('casesAndDeaths')} class={`ui button`+(casesOrDeaths == 'casesAndDeaths' ? ' active' : '')}>Cases and Deaths</button>
-                            <button onClick={() => onClickCasesOrDeaths('cases')} class={`ui button`+(casesOrDeaths == 'cases' ? ' active' : '')}>Cases Only</button>
-                            <button onClick={() => onClickCasesOrDeaths('deaths')} class={`ui button`+(casesOrDeaths == 'deaths' ? ' active' : '')}>Deaths Only</button>
+                            <button onClick={() => onClickCasesOrDeaths('casesAndDeaths')} 
+                                class={`ui button`+(casesOrDeaths == 'casesAndDeaths' ? ' active' : '')}>Cases and Deaths</button>
+                            <button onClick={() => onClickCasesOrDeaths('cases')} 
+                                class={`ui button`+(casesOrDeaths == 'cases' ? ' active' : '')}>Cases Only</button>
+                            <button onClick={() => onClickCasesOrDeaths('deaths')} 
+                                class={`ui button`+(casesOrDeaths == 'deaths' ? ' active' : '')}>Deaths Only</button>
                         </div>
 );
             }
+
+            const [showPer100k, setShowPer100k] = React.useState(false);
+            // const onChangePer100k = event => setShowPer100k(event.target.checked);
+            // const CheckboxPer100k = () => {
+            //     return(<fieldset>
+            //                 <label style={{float: 'right', paddingLeft: '3px'}} htmlFor="CheckboxPer100k">per 100K</label>
+            //                 <input id="CheckboxPer100k" onChange={onChangePer100k} type="checkbox" checked={showPer100k} />
+            //             </fieldset>)
+            // }
+
+            const onClickShowPer100k = value => setShowPer100k(value);
+            const SelectShowPer100k = value => {
+                return(
+                    <div class="ui buttons">
+                        <button onClick={() => onClickShowPer100k(true)} 
+                                class={`ui button`+(showPer100k == true ? ' active' : '')}>Per 100k</button>
+                        <button onClick={() => onClickShowPer100k(false)} 
+                                class={`ui button`+(showPer100k == false ? ' active' : '')}>Raw Total</button>
+                    </div>
+                )
+            }
+
             const [governmentBranch, setGovernmentBranch] = React.useState('Governor');
             const onChangeGovernmentBranch = event => setGovernmentBranch(event.target.value);
             const SelectGovernmentBranch = () => {
@@ -172,14 +183,14 @@
                     </fieldset>
                 )
             }
-            const [showPer100k, setShowPer100k] = React.useState(false);
-            const onChangePer100k = event => setShowPer100k(event.target.checked);
-            const CheckboxPer100k = () => {
-                return(<fieldset>
-                            <label style={{float: 'right', paddingLeft: '3px'}} htmlFor="CheckboxPer100k">per 100K</label>
-                            <input id="CheckboxPer100k" onChange={onChangePer100k} type="checkbox" checked={showPer100k} />
-                        </fieldset>)
-            }
+            // const [showPer100k, setShowPer100k] = React.useState(false);
+            // const onChangePer100k = event => setShowPer100k(event.target.checked);
+            // const CheckboxPer100k = () => {
+            //     return(<fieldset>
+            //                 <label style={{float: 'right', paddingLeft: '3px'}} htmlFor="CheckboxPer100k">per 100K</label>
+            //                 <input id="CheckboxPer100k" onChange={onChangePer100k} type="checkbox" checked={showPer100k} />
+            //             </fieldset>)
+            // }
             const [show7DayAvg, setShow7DayAvg] = React.useState(false);
             const onChange7DayAvg = event => setShow7DayAvg(event.target.checked);
             const Checkbox7DayAvg = () => {
@@ -188,9 +199,20 @@
                             <input id="Checkbox7DayAvg" onChange={onChange7DayAvg} type="checkbox" checked={show7DayAvg} />
                         </fieldset>)
             }
+
+            // return (<>
+            //             <Heading1 />
+            //             <SelectCasesOrDeaths /><SelectGovernmentBranch /><SelectNextNumberOfWeeks /><CheckboxPer100k /><Checkbox7DayAvg />
+            //             <StatesTable 
+            //                 showCasesOrDeaths={casesOrDeaths} 
+            //                 governmentBranch={governmentBranch} 
+            //                 nextNumberOfWeeks={nextNumberOfWeeks}
+            //                 showPer100k={showPer100k} show7DayAvg={show7DayAvg} />
+            //         </>)
+
             return (<>
                         <Heading1 />
-                        <SelectCasesOrDeaths /><SelectGovernmentBranch /><SelectNextNumberOfWeeks /><CheckboxPer100k /><Checkbox7DayAvg />
+                        <SelectCasesOrDeaths /><SelectShowPer100k />
                         <StatesTable 
                             showCasesOrDeaths={casesOrDeaths} 
                             governmentBranch={governmentBranch} 
