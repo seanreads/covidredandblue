@@ -17,17 +17,19 @@
         <script src="scripts/helper.js"></script>
         <script src="data/us_records.json"></script>
         <script type="text/babel">
-        function StatesTable({showCasesOrDeaths, governmentBranch, nextNumberOfWeeks, showPer100k}) {
+        function StatesTable({showCasesOrDeaths, governmentBranch, showPer100k}) {
             const [statesData, setStatesData] = React.useState(US_RECORDS);
             const [statesDataSortOrder, setStatesDataSortOrder] = React.useState({});
-            const newCasesNextWeeksKey = getNewCasesNextWeeksKey(nextNumberOfWeeks, showPer100k);
-            const newDeathsNextWeeksKey = getNewDeathsNextWeeksKey(nextNumberOfWeeks, showPer100k);
+            // const newCasesNextWeeksKey = getNewCasesNextWeeksKey(nextNumberOfWeeks, showPer100k);
+            // const newDeathsNextWeeksKey = getNewDeathsNextWeeksKey(nextNumberOfWeeks, showPer100k);
             const [show7DayAvg, setShow7DayAvg] = React.useState(false);
             const onClickShowSevenDayAvg = value => setShow7DayAvg(value); 
             const newCasesKey = getNewCasesKey(showPer100k, show7DayAvg);
             const newDeathsKey = getNewDeathsKey(showPer100k, show7DayAvg);
-            const newCasesPrev6WeeksKey = getNewCasesPrev6WeeksKey(showPer100k);
-            const newDeathsPrev6WeeksKey = getNewDeathsPrev6WeeksKey(showPer100k);
+            // const newCasesPrev6WeeksKey = getNewCasesPrev6WeeksKey(showPer100k);
+            // const newDeathsPrev6WeeksKey = getNewDeathsPrev6WeeksKey(showPer100k);
+            // const newCasesPrevWeeksKey = getNewCasesPrevWeeksKey(showPer100k);
+            // const newDeathsPrevWeeksKey = getNewDeathsPrevWeeksKey(showPer100k);
             const totalCasesKey = getTotalCasesKey(showPer100k);
             const totalDeathsKey = getTotalDeathsKey(showPer100k);
             const SelectSevenDayAverage = () => {
@@ -38,6 +40,23 @@
                                 class={`ui button`+(show7DayAvg == true ? ' active' : '')}>7-day avg</button>
                       </div>)
             }
+            const [pastNumberOfWeeks, setPastNumberOfWeeks] = React.useState('6');
+            const onChangePastNumberOfWeeks = event => setPastNumberOfWeeks(event.target.value);
+            const newCasesPrevWeeksKey = getNewCasesPrevWeeksKey(pastNumberOfWeeks, showPer100k);
+            const newDeathsPrevWeeksKey = getNewDeathsPrevWeeksKey(pastNumberOfWeeks, showPer100k);
+            const newCasesNextWeeksKey = getNewCasesNextWeeksKey(pastNumberOfWeeks, showPer100k);
+            const newDeathsNextWeeksKey = getNewDeathsNextWeeksKey(pastNumberOfWeeks, showPer100k);
+            const SelectPastNumberOfWeeks = () => {
+                return(<select class="ui dropdown" onChange={onChangePastNumberOfWeeks} value={pastNumberOfWeeks}>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                       </select>
+                )
+            }            
             const statesRows = statesData.map((record) => { 
                 return(
                     <tr key={record["State"]} className={rowClassForPartyControl(record["Control"])}>
@@ -47,8 +66,8 @@
                         </th>
                         <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesKey],'0,0.00')}</td>
                         <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsKey],'0,0.00')}</td>
-                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesPrev6WeeksKey],'0,0.00')}</td>
-                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsPrev6WeeksKey],'0,0.00')}</td>
+                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesPrevWeeksKey],'0,0.00')}</td>
+                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsPrevWeeksKey],'0,0.00')}</td>
                         <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesNextWeeksKey],'0,0.00')}</td>
                         <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsNextWeeksKey],'0,0.00')}</td>
                         <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[totalCasesKey],'0,0.00')}</td>
@@ -81,8 +100,8 @@
                                 </div>
                             </th>
                             <th style={{textAlign: 'center'}} className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Daily New <br /> <SelectSevenDayAverage /></th>
-                            <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Past 6 Weeks</th>
-                            <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next {nextNumberOfWeeks} Week{nextNumberOfWeeks > 1 ? 's' : ''}</th>
+                            <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Past <SelectPastNumberOfWeeks /> Week{pastNumberOfWeeks > 1 ? 's' : ''}</th>
+                            <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next {pastNumberOfWeeks} Week{pastNumberOfWeeks > 1 ? 's' : ''}</th>
                             <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Total to Date</th>
                             <th rowSpan="2"><a onClick={() => sortStatesDataByGovernmentBranch(governmentBranch)}>{governmentBranch}</a></th>
                         </tr>
@@ -94,10 +113,10 @@
                                 <a onClick={() => sortStatesDataBy(newDeathsKey, false)}>Deaths</a>
                             </th>
                             <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
-                                <a onClick={() => sortStatesDataBy(newCasesPrev6WeeksKey, false)}>Cases</a>
+                                <a onClick={() => sortStatesDataBy(newCasesPrevWeeksKey, false)}>Cases</a>
                             </th>
                             <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
-                                <a onClick={() => sortStatesDataBy(newDeathsPrev6WeeksKey, false)}>Deaths</a>
+                                <a onClick={() => sortStatesDataBy(newDeathsPrevWeeksKey, false)}>Deaths</a>
                             </th>
                             <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
                                 <a onClick={() => sortStatesDataBy(newCasesNextWeeksKey, false)}>Cases</a>
@@ -165,23 +184,23 @@
                     </fieldset>
                 )
             }
-            const [nextNumberOfWeeks, setNextNumberOfWeeks] = React.useState('1');
-            const onChangeNextNumberOfWeeks = event => setNextNumberOfWeeks(event.target.value);
-            const SelectNextNumberOfWeeks = () => {
-                return(
-                    <fieldset style={{paddingRight: '10px'}}>
-                        <label style={{paddingLeft: '0px'}} htmlFor="SelectNextNumberOfWeeks">for next</label>
-                        <select id="SelectNextNumberOfWeeks" onChange={onChangeNextNumberOfWeeks} value={nextNumberOfWeeks}>
-                            <option value="1">1 week</option>
-                            <option value="2">2 weeks</option>
-                            <option value="3">3 weeks</option>
-                            <option value="4">4 weeks</option>
-                            <option value="5">5 weeks</option>
-                            <option value="6">6 weeks</option>
-                        </select>
-                    </fieldset>
-                )
-            }
+            // const [nextNumberOfWeeks, setNextNumberOfWeeks] = React.useState('1');
+            // const onChangeNextNumberOfWeeks = event => setNextNumberOfWeeks(event.target.value);
+            // const SelectNextNumberOfWeeks = () => {
+            //     return(
+            //         <fieldset style={{paddingRight: '10px'}}>
+            //             <label style={{paddingLeft: '0px'}} htmlFor="SelectNextNumberOfWeeks">for next</label>
+            //             <select id="SelectNextNumberOfWeeks" onChange={onChangeNextNumberOfWeeks} value={nextNumberOfWeeks}>
+            //                 <option value="1">1 week</option>
+            //                 <option value="2">2 weeks</option>
+            //                 <option value="3">3 weeks</option>
+            //                 <option value="4">4 weeks</option>
+            //                 <option value="5">5 weeks</option>
+            //                 <option value="6">6 weeks</option>
+            //             </select>
+            //         </fieldset>
+            //     )
+            // }
 
             return (<>
                         <Heading1 />
@@ -189,7 +208,6 @@
                         <StatesTable 
                             showCasesOrDeaths={casesOrDeaths} 
                             governmentBranch={governmentBranch} 
-                            nextNumberOfWeeks={nextNumberOfWeeks}
                             showPer100k={showPer100k} />
                     </>)
         }
