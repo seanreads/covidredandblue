@@ -16,8 +16,23 @@
         <script src="data/us_records.json"></script>
         <script type="text/babel">
         function StatesTable({showCasesOrDeaths, showPer100k}) {
+            const sortStatesDataBy = (prop, ascending = true) => {
+                const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: ascending};
+                setStatesDataSortOrder({...statesDataSortOrder, ...propSortOrder});
+                let sortedData = [...statesData].sort((a, b) => a[prop] > b[prop] ? 1 : -1);
+                if (propSortOrder[prop] == false) sortedData.reverse();
+                setStatesData(sortedData);
+            };
+            const sortStatesDataByGovernmentBranch = prop => {
+                const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: true};
+                setStatesDataSortOrder({...statesDataSortOrder, ...propSortOrder});
+                let sortedData = [...statesData].sort((a, b) => a[prop] > b[prop] ? 1 : (a[prop] == b[prop]) ? ((a['Control'] > b['Control']) ? 1 : -1) : -1);
+                if (propSortOrder[prop] == false) sortedData.reverse();
+                setStatesData(sortedData);
+            };
             const [statesData, setStatesData] = React.useState(US_RECORDS);
             const [statesDataSortOrder, setStatesDataSortOrder] = React.useState({});
+            if (Object.keys(statesDataSortOrder).length === 0) sortStatesDataBy('Deaths_100k', false);
             const [show7DayAvg, setShow7DayAvg] = React.useState(false);
             const onClickShowSevenDayAvg = value => setShow7DayAvg(value); 
             const newCasesKey = getNewCasesKey(showPer100k, show7DayAvg);
@@ -80,20 +95,20 @@
                         <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[totalDeathsKey],'0,0.00')}</td>
                     </tr>); 
             });
-            const sortStatesDataBy = (prop, ascending = true) => {
-                const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: ascending};
-                setStatesDataSortOrder({...statesDataSortOrder, ...propSortOrder});
-                let sortedData = [...statesData].sort((a, b) => a[prop] > b[prop] ? 1 : -1);
-                if (propSortOrder[prop] == false) sortedData.reverse();
-                setStatesData(sortedData);
-            };
-            const sortStatesDataByGovernmentBranch = prop => {
-                const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: true};
-                setStatesDataSortOrder({...statesDataSortOrder, ...propSortOrder});
-                let sortedData = [...statesData].sort((a, b) => a[prop] > b[prop] ? 1 : (a[prop] == b[prop]) ? ((a['Control'] > b['Control']) ? 1 : -1) : -1);
-                if (propSortOrder[prop] == false) sortedData.reverse();
-                setStatesData(sortedData);
-            };
+            // const sortStatesDataBy = (prop, ascending = true) => {
+            //     const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: ascending};
+            //     setStatesDataSortOrder({...statesDataSortOrder, ...propSortOrder});
+            //     let sortedData = [...statesData].sort((a, b) => a[prop] > b[prop] ? 1 : -1);
+            //     if (propSortOrder[prop] == false) sortedData.reverse();
+            //     setStatesData(sortedData);
+            // };
+            // const sortStatesDataByGovernmentBranch = prop => {
+            //     const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: true};
+            //     setStatesDataSortOrder({...statesDataSortOrder, ...propSortOrder});
+            //     let sortedData = [...statesData].sort((a, b) => a[prop] > b[prop] ? 1 : (a[prop] == b[prop]) ? ((a['Control'] > b['Control']) ? 1 : -1) : -1);
+            //     if (propSortOrder[prop] == false) sortedData.reverse();
+            //     setStatesData(sortedData);
+            // };
             return (
                 <table className="ui celled table unstackable">
                     <thead>
