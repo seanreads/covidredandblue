@@ -103,6 +103,10 @@ td.governmentBranch {
     color: #bfbfbf;
 }
 
+.ui.label {
+    background-color: #f9fafb !important;
+}
+
 div.populationLabel, div.populationLabel a {
     font-style: normal;
     font-weight: normal;
