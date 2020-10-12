@@ -51,3 +51,19 @@ const getNewDeathsKey = (showPer100k, show7DayAvg) => {
 
 const getTotalCasesKey = showPer100k => showPer100k ? 'Cases_100k' : 'Cases';
 const getTotalDeathsKey = showPer100k => showPer100k ? 'Deaths_100k' : 'Deaths';
+
+const govtRowShowHideClass = (record, govtRowShowHide) => {
+
+    let showRow = true;
+    
+        if (record['Governor'] == 'D' && govtRowShowHide['showDemocratGovernors'] == false) 
+            showRow = false;
+        if (record['Legislature'] == 'D' && govtRowShowHide['showDemocratLegislatures'] == false)
+            showRow = false;
+        if (record['Governor'] == 'R' && govtRowShowHide['showRepublicanGovernors'] == false)
+            showRow = false;
+        if (record['Legislature'] == 'R' && govtRowShowHide['showRepublicanLegislatures'] == false)
+            showRow = false;
+
+    return (showRow == true ? 'showRow' : 'hideRow');
+}
