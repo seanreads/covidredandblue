@@ -58,11 +58,11 @@ const govtRowShowHideClass = (record, govtRowShowHide) => {
     
         if ((record['Governor'] == 'D' || record['Governor'] == 'NA') && govtRowShowHide['showDemocratGovernors'] == false) 
             showRow = false;
-        if (record['Legislature'] == 'D' && govtRowShowHide['showDemocratLegislatures'] == false)
+        if ((record['Legislature'] == 'D' || record['Legislature'] == 'NA') && govtRowShowHide['showDemocratLegislatures'] == false)
             showRow = false;
         if ((record['Governor'] == 'R' || record['Governor'] == 'NA') && govtRowShowHide['showRepublicanGovernors'] == false)
             showRow = false;
-        if (record['Legislature'] == 'R' && govtRowShowHide['showRepublicanLegislatures'] == false)
+        if ((record['Legislature'] == 'R' || record['Legislature'] == 'NA') && govtRowShowHide['showRepublicanLegislatures'] == false)
             showRow = false;
 
     return (showRow == true ? 'showRow' : 'hideRow');
