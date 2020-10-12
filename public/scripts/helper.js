@@ -17,10 +17,6 @@ const rowClassForPartyControl = (partyControl) => {
         className = 'unknownControl'
     return className;
 }
-
-// const getNewCasesPrev6WeeksKey = showPer100k => showPer100k ? 'NewCases_prev6wk_100k' : 'NewCases_prev6wk';
-// const getNewDeathsPrev6WeeksKey = showPer100k => showPer100k ? 'NewDeaths_prev6wk_100k' : 'NewDeaths_prev6wk';
-
 const getNewCasesPrevWeeksKey = (prevNumberOfWeeks, showPer100k) => showPer100k ? `NewCases_prev${prevNumberOfWeeks}wk_100k` : `NewCases_prev${prevNumberOfWeeks}wk`;
 const getNewDeathsPrevWeeksKey = (prevNumberOfWeeks, showPer100k) => showPer100k ? `NewDeaths_prev${prevNumberOfWeeks}wk_100k` : `NewDeaths_prev${prevNumberOfWeeks}wk`;
 

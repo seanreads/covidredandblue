@@ -2,7 +2,6 @@
     <head>
         
         <title>COVID Red and Blue | COVID-19 Cases and Deaths by State Goverment Party Control</title>
-        <link href='https://fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" />
         <link async rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css" />     
         <link rel="stylesheet" href="styles/application.css" rel='stylesheet' type='text/css' />
@@ -13,11 +12,10 @@
         <script src="https://unpkg.com/react@16.12.0/umd/react.production.min.js"></script>
         <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.production.min.js"></script>
         <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
-        <script src="scripts/App.js"></script>
         <script src="scripts/helper.js"></script>
         <script src="data/us_records.json"></script>
         <script type="text/babel">
-        function StatesTable({showCasesOrDeaths, governmentBranch, showPer100k}) {
+        function StatesTable({showCasesOrDeaths, showPer100k}) {
             const [statesData, setStatesData] = React.useState(US_RECORDS);
             const [statesDataSortOrder, setStatesDataSortOrder] = React.useState({});
             const [show7DayAvg, setShow7DayAvg] = React.useState(false);
@@ -27,10 +25,10 @@
             const totalCasesKey = getTotalCasesKey(showPer100k);
             const totalDeathsKey = getTotalDeathsKey(showPer100k);
             const SelectSevenDayAverage = () => {
-                return(<div class="ui buttons">
-                        <button style={{fontSize: '10px'}} onClick={() => onClickShowSevenDayAvg(false)} 
+                return(<div id="sevenDayAverageMenu" class="ui buttons">
+                        <button onClick={() => onClickShowSevenDayAvg(false)} 
                                 class={`ui button`+(show7DayAvg == false ? ' active' : '')}>Raw Total</button>
-                        <button style={{fontSize: '10px'}} onClick={() => onClickShowSevenDayAvg(true)} 
+                        <button onClick={() => onClickShowSevenDayAvg(true)} 
                                 class={`ui button`+(show7DayAvg == true ? ' active' : '')}>7-day avg</button>
                       </div>)
             }
@@ -52,21 +50,34 @@
                 )
             }            
             const statesRows = statesData.map((record) => { 
+                let governorColor = 'gray';
+                if (record['Governor'] == 'R')
+                    governorColor = 'red';
+                else if (record['Governor'] == 'D')
+                    governorColor = 'blue';
+                let legislatureColor = 'gray';
+                if (record['Legislature'] == 'R')
+                    legislatureColor = 'red';
+                else if (record['Legislature'] == 'D')
+                    legislatureColor = 'blue';                    
                 return(
-                    <tr key={record["State"]} className={rowClassForPartyControl(record["Control"])+ (record[governmentBranch] == 'NA' ? ' disabled' : '')}>
-                        <th className="stateName">
+                    <tr key={record["State"]} className={rowClassForPartyControl(record["Control"])+ (record['Governor'] == 'NA' ? ' disabled' : '')}>
+                        <th style={{width: '100px'}} className="stateName">
                             <div>{record["State"]}</div>
                             <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(record["Population"],'0,0')}</span></div>
                         </th>
-                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesKey],'0,0.00')}</td>
-                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsKey],'0,0.00')}</td>
-                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesPrevWeeksKey],'0,0.00')}</td>
-                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsPrevWeeksKey],'0,0.00')}</td>
-                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesNextWeeksKey],'0,0.00')}</td>
-                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsNextWeeksKey],'0,0.00')}</td>
-                        <td className={'colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[totalCasesKey],'0,0.00')}</td>
-                        <td className={'colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[totalDeathsKey],'0,0.00')}</td>
-                        <td>{record[governmentBranch]}</td>
+                        <td style={{borderLeft: 'none'}} className="governmentBranch">
+                            <i aria-hidden="true" class={`${governorColor}Governor user big icon` + (record['Governor'] == 'NA' ? ' hidden' : '')}></i>
+                            <i aria-hidden="true" class={`${legislatureColor}Legislature university big icon` + (record['Legislature'] == 'NA' ? ' hidden' : '')}></i>
+                        </td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesKey],'0,0.00')}</td>
+                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsKey],'0,0.00')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesPrevWeeksKey],'0,0.00')}</td>
+                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsPrevWeeksKey],'0,0.00')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesNextWeeksKey],'0,0.00')}</td>
+                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsNextWeeksKey],'0,0.00')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[totalCasesKey],'0,0.00')}</td>
+                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[totalDeathsKey],'0,0.00')}</td>
                     </tr>); 
             });
             const sortStatesDataBy = (prop, ascending = true) => {
@@ -76,52 +87,52 @@
                 if (propSortOrder[prop] == false) sortedData.reverse();
                 setStatesData(sortedData);
             };
-            const sortStatesDataByGovernmentBranch = prop => {
-                const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: true};
-                setStatesDataSortOrder({...statesDataSortOrder, ...propSortOrder});
-                let sortedData = [...statesData].sort((a, b) => a[prop] > b[prop] ? 1 : (a[prop] == b[prop]) ? ((a['Control'] > b['Control']) ? 1 : -1) : -1);
-                if (propSortOrder[prop] == false) sortedData.reverse();
-                setStatesData(sortedData);
-            };
+            // const sortStatesDataByGovernmentBranch = prop => {
+            //     const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: true};
+            //     setStatesDataSortOrder({...statesDataSortOrder, ...propSortOrder});
+            //     let sortedData = [...statesData].sort((a, b) => a[prop] > b[prop] ? 1 : (a[prop] == b[prop]) ? ((a['Control'] > b['Control']) ? 1 : -1) : -1);
+            //     if (propSortOrder[prop] == false) sortedData.reverse();
+            //     setStatesData(sortedData);
+            // };
             return (
-                <table className="ui celled table">
+                <table className="ui celled table unstackable">
                     <thead>
                         <tr>
-                            <th style={{textAlign: 'left', paddingLeft: '5px'}} rowSpan="2">
+                            <th style={{width: '100px', textAlign: 'left', paddingLeft: '5px'}} rowSpan="2">
                                 <div>
                                     <div><a onClick={() => sortStatesDataBy("State", false)}>State</a> </div>
                                     <div><span style={{fontWeight: 'normal', fontSize: '0.85em'}}><a onClick={() => sortStatesDataBy("Population", false)}>Population</a></span></div>
                                 </div>
                             </th>
-                            <th style={{textAlign: 'center'}} className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Daily New <br /> <SelectSevenDayAverage /></th>
-                            <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Past <SelectPastNumberOfWeeks /> Week{pastNumberOfWeeks > 1 ? 's' : ''}</th>
-                            <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next {pastNumberOfWeeks} Week{pastNumberOfWeeks > 1 ? 's' : ''}</th>
-                            <th className="colHeadsOne" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Total to Date</th>
-                            <th rowSpan="2"><a onClick={() => sortStatesDataByGovernmentBranch(governmentBranch)}>{governmentBranch}</a></th>
+                            <th style={{borderLeft: 'none'}} rowSpan="2">Govt</th>
+                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Daily New <br /> <SelectSevenDayAverage /></th>
+                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Past <SelectPastNumberOfWeeks /> Week{pastNumberOfWeeks > 1 ? 's' : ''}</th>
+                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next {pastNumberOfWeeks} Week{pastNumberOfWeeks > 1 ? 's' : ''}</th>
+                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Total to Date</th>
                         </tr>
                         <tr>
-                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                            <th style={{borderLeft: '1px dotted #E1E1E1'}} className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
                                 <a onClick={() => sortStatesDataBy(newCasesKey, false)}>Cases</a>
                             </th>
-                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
+                            <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
                                 <a onClick={() => sortStatesDataBy(newDeathsKey, false)}>Deaths</a>
                             </th>
-                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                            <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
                                 <a onClick={() => sortStatesDataBy(newCasesPrevWeeksKey, false)}>Cases</a>
                             </th>
-                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
+                            <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
                                 <a onClick={() => sortStatesDataBy(newDeathsPrevWeeksKey, false)}>Deaths</a>
                             </th>
-                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                            <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
                                 <a onClick={() => sortStatesDataBy(newCasesNextWeeksKey, false)}>Cases</a>
                             </th>
-                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
+                            <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
                                 <a onClick={() => sortStatesDataBy(newDeathsNextWeeksKey, false)}>Deaths</a>
                             </th>
-                            <th className={'colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                            <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
                                 <a onClick={() => sortStatesDataBy(totalCasesKey, false)}>Cases</a>
                             </th>
-                            <th className={'colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
+                            <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
                                 <a onClick={() => sortStatesDataBy(totalDeathsKey, false)}>Deaths</a>
                             </th>
                         </tr>                      
@@ -148,8 +159,7 @@
                                 class={`ui button`+(casesOrDeaths == 'cases' ? ' active' : '')}>Cases Only</button>
                             <button onClick={() => onClickCasesOrDeaths('deaths')} 
                                 class={`ui button`+(casesOrDeaths == 'deaths' ? ' active' : '')}>Deaths Only</button>
-                        </div>
-);
+                        </div>);
             }
 
             const [showPer100k, setShowPer100k] = React.useState(true);
@@ -164,44 +174,11 @@
                     </div>
                 )
             }
-
-            const [governmentBranch, setGovernmentBranch] = React.useState('Governor');
-            const onChangeGovernmentBranch = event => setGovernmentBranch(event.target.value);
-            const SelectGovernmentBranch = () => {
-                return(
-                    <fieldset>
-                        <label style={{paddingLeft:'0px'}} htmlFor="SelectGovernmentBranch">by political party of</label>
-                        <select id="SelectGovernmentBranch" onChange={onChangeGovernmentBranch} value={governmentBranch}>
-                            <option value="Governor">Governor</option>
-                            <option value="Legislature">State Legislature</option>
-                        </select>
-                    </fieldset>
-                )
-            }
-            // const [nextNumberOfWeeks, setNextNumberOfWeeks] = React.useState('1');
-            // const onChangeNextNumberOfWeeks = event => setNextNumberOfWeeks(event.target.value);
-            // const SelectNextNumberOfWeeks = () => {
-            //     return(
-            //         <fieldset style={{paddingRight: '10px'}}>
-            //             <label style={{paddingLeft: '0px'}} htmlFor="SelectNextNumberOfWeeks">for next</label>
-            //             <select id="SelectNextNumberOfWeeks" onChange={onChangeNextNumberOfWeeks} value={nextNumberOfWeeks}>
-            //                 <option value="1">1 week</option>
-            //                 <option value="2">2 weeks</option>
-            //                 <option value="3">3 weeks</option>
-            //                 <option value="4">4 weeks</option>
-            //                 <option value="5">5 weeks</option>
-            //                 <option value="6">6 weeks</option>
-            //             </select>
-            //         </fieldset>
-            //     )
-            // }
-
             return (<>
                         <Heading1 />
                         <SelectCasesOrDeaths /><SelectShowPer100k />
                         <StatesTable 
                             showCasesOrDeaths={casesOrDeaths} 
-                            governmentBranch={governmentBranch} 
                             showPer100k={showPer100k} />
                     </>)
         }

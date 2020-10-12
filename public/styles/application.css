@@ -8,28 +8,20 @@ a, a:hover {
 }
 
 /* menu */
+
+#sevenDayAverageMenu .button {
+    font-size: 10px;
+}
+
 fieldset {
     overflow: hidden;
     float: left;
 }    
-label {
-    float: left;
-    clear: none;
-    display: block;
-    padding: 6px 10px 8px 10px;
-    font-size: 18px;
-    font-weight: normal;
+button {
     cursor: pointer;
 }
 
-input[type=checkbox] { 
-    vertical-align: middle; 
-    position: relative; 
-    bottom: -12px; 
-    cursor: pointer;
-} 
-
-select, option {
+button, select, option {
     cursor: pointer;
 }
 
@@ -43,10 +35,11 @@ table {
 }
 th, td { 
     white-space: nowrap;
-    text-align:center;
+    text-align: center;
 }
 
 th.colHeadsOne {
+    text-align: center;
     border-left: 1px dotted #E1E1E1;
     border-right: 1px dotted #E1E1E1;
 }
@@ -84,9 +77,30 @@ td.colCellGovernmentBranch {
 th.stateName {
     text-align:left;
     background-color: white;
-    border-right: 1px dotted #E1E1E1;
+    border-right: white 1px solid;
     padding-left: 5px;
     border-bottom: 1px solid rgba(34,36,38,.1);
+}
+
+i.hidden {
+    display: none;
+}
+
+td.governmentBranch {
+    background-color: white;
+    border-left: white 1px solid;
+}
+
+.redGovernor, .redLegislature {
+    color: #ff0000;
+}
+
+.blueGovernor, .blueLegislature {
+    color: #0066ff;
+}
+
+.grayGovernor, .grayLegislature {
+    color: #bfbfbf;
 }
 
 div.populationLabel, div.populationLabel a {
