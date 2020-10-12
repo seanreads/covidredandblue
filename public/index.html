@@ -95,34 +95,46 @@
                         <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[totalDeathsKey],'0,0.00')}</td>
                     </tr>); 
             });
-            // const sortStatesDataBy = (prop, ascending = true) => {
-            //     const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: ascending};
-            //     setStatesDataSortOrder({...statesDataSortOrder, ...propSortOrder});
-            //     let sortedData = [...statesData].sort((a, b) => a[prop] > b[prop] ? 1 : -1);
-            //     if (propSortOrder[prop] == false) sortedData.reverse();
-            //     setStatesData(sortedData);
-            // };
-            // const sortStatesDataByGovernmentBranch = prop => {
-            //     const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: true};
-            //     setStatesDataSortOrder({...statesDataSortOrder, ...propSortOrder});
-            //     let sortedData = [...statesData].sort((a, b) => a[prop] > b[prop] ? 1 : (a[prop] == b[prop]) ? ((a['Control'] > b['Control']) ? 1 : -1) : -1);
-            //     if (propSortOrder[prop] == false) sortedData.reverse();
-            //     setStatesData(sortedData);
-            // };
+            const [showRepublicanGovernors, setShowRepublicanGovernors] = React.useState(true);
+            const [showDemocratGovernors, setShowDemocratGovernors] = React.useState(true);
+
+            const [showRepublicanLegislatures, setShowRepublicanLegislatures] = React.useState(true);
+            const [showDemocratLegislatures, setShowDemocratLegislatures] = React.useState(true);       
+            console.log(showRepublicanGovernors);  
+            const onClickShowRepublicanGovernors = () => setShowRepublicanGovernors(!showRepublicanGovernors);
+            const onClickShowDemocratGovernors = () => setShowDemocratGovernors(!showDemocratGovernors);
+            const onClickShowRepublicanLegislatures = () => setShowRepublicanLegislatures(!showRepublicanLegislatures);
+            const onClickShowDemocratLegislatures = () => setShowDemocratLegislatures(!showDemocratLegislatures);
             return (
                 <table className="ui celled table unstackable">
                     <thead>
                         <tr>
                             <th style={{width: '100px', textAlign: 'left', paddingLeft: '5px'}} rowSpan="2">
                                 <div>
-                                    <div><a class="ui label" style={{paddingLeft: '0px', fontSize: '14px', fontWeight: 'strong !important'}} onClick={() => sortStatesDataBy("State", false)}>State</a> </div>
+                                    <div style={{marginBottom: '5px'}}><a class="ui label" style={{paddingLeft: '0px', fontSize: '14px', fontWeight: 'strong !important'}} onClick={() => sortStatesDataBy("State", false)}>State</a> </div>
                                     <div><span style={{fontWeight: 'normal', fontSize: '0.85em'}}><a style={{paddingLeft: '0px',paddingTop:'3px'}}class="ui label" onClick={() => sortStatesDataBy("Population", false)}>Population</a></span></div>
                                 </div>
                             </th>
                             <th style={{borderLeft: 'none'}} rowSpan="2">
                                 <div>
-                                    <div><a id="governorLabel" class="ui label" onClick={() => sortStatesDataByGovernmentBranch("Governor")}><i class="user icon"></i>Governor</a></div>
-                                    <div><a id="legislatureLabel" class="ui label" onClick={() => sortStatesDataByGovernmentBranch("Legislature")}><i class="university icon"></i>Legislature</a></div>
+                                    <div style={{marginBottom: '5px'}}>
+                                        <a id="governorLabel" class="ui label" onClick={() => sortStatesDataByGovernmentBranch("Governor")}>
+                                            <i class="user icon"></i>Governor
+                                        </a>
+                                        <span style={{marginLeft: '8px'}}>
+                                            <button onClick={onClickShowDemocratGovernors} style={{fontSize: '10px'}} class={`govt democrat ui button` + (showDemocratGovernors == true ? ' active' : ' inactive')}>D</button>
+                                            <button onClick={onClickShowRepublicanGovernors} style={{fontSize: '10px'}} class={`govt republican ui button` + (showRepublicanGovernors == true ? ' active' : ' inactive')}>R</button>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <a id="legislatureLabel" class="ui label" onClick={() => sortStatesDataByGovernmentBranch("Legislature")}>
+                                            <i class="university icon"></i>Legislature
+                                        </a>
+                                        <span>
+                                            <button onClick={onClickShowDemocratLegislatures} style={{fontSize: '10px'}} class={`govt democrat ui button` + (showDemocratLegislatures == true ? ' active' : ' inactive')}>D</button>
+                                            <button onClick={onClickShowRepublicanLegislatures} style={{fontSize: '10px'}} class={`govt republican ui button` + (showRepublicanLegislatures == true ? ' active' : ' inactive')}>R</button>
+                                        </span>
+                                    </div>
                                 </div>
                             </th>
                             <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Daily New <br /> <SelectSevenDayAverage /></th>
