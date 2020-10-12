@@ -152,7 +152,7 @@
 
             const SelectCasesOrDeaths = () => {
                 return(
-                        <div class="ui buttons">
+                        <div class="ui buttons" style={{marginRight: '10px', marginBottom: '10px'}}>
                             <button onClick={() => onClickCasesOrDeaths('casesAndDeaths')} 
                                 class={`ui button`+(casesOrDeaths == 'casesAndDeaths' ? ' active' : '')}>Cases and Deaths</button>
                             <button onClick={() => onClickCasesOrDeaths('cases')} 
