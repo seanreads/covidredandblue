@@ -109,10 +109,10 @@
                 let classes = 'sort icon disabled';
                 if (sortOrder.hasOwnProperty(colName)) {
                     if (sortOrder[colName] == true) {
-                        classes = 'sort icon down';
+                        classes = 'sort icon up';
                     }
                     else if (sortOrder[colName] == false) {
-                        classes = 'sort icon up';
+                        classes = 'sort icon down';
                     } 
                 }  
                 return(<i style={{textDecoration: 'none'}} className={classes}></i>); 
@@ -224,6 +224,7 @@
             }
             return (<>
                         <Heading1 />
+                        <p>The virus is not partisan. Ignoring science can have tragic consequences. Here are the facts.</p>
                         <SelectCasesOrDeaths /><SelectShowPer100k />
                         <StatesTable 
                             showCasesOrDeaths={casesOrDeaths} 
