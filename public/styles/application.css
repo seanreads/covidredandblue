@@ -55,14 +55,11 @@ th.colHeadsCases {
 
 th.colHeadsDeaths {
     border-right: 1px dotted #E1E1E1;
+    border-left: 1px solid #E1E1E1 !important;
 }
 
 td.colCellCases {
     border-left: 1px dotted #E1E1E1;
-}
-
-td.colCellDeaths {
-    border-right: 1px dotted #E1E1E1;
 }
 
 td.colCellPopulation {

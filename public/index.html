@@ -82,7 +82,7 @@
                 else if (record['Legislature'] == 'D')
                     legislatureColor = 'blue';                    
                 return(
-                    <tr key={record["State"]} className={govtRowShowHideClass(record, govtRowShowHide) + ' ' + rowClassForPartyControl(record["Control"])+ (record['Governor'] == 'NA' ? ' disabled' : '')}>
+                    <tr key={record["State"]} className={govtRowShowHideClass(record, govtRowShowHide) + ' ' + rowClassForPartyControl(record["Control"])}>
                         <th style={{width: '100px'}} className="stateName">
                             <div>{record["State"]}</div>
                             <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(record["Population"],'0,0')}</span></div>
