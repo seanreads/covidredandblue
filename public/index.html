@@ -91,14 +91,14 @@
                             <i aria-hidden="true" class={`${governorColor}Governor user big icon` + (record['Governor'] == 'NA' ? ' hidden' : '')}></i>
                             <i aria-hidden="true" class={`${legislatureColor}Legislature university big icon` + (record['Legislature'] == 'NA' ? ' hidden' : '')}></i>
                         </td>
-                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesKey],'0,0.00')}</td>
                         <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsKey],'0,0.00')}</td>
-                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesPrevWeeksKey],'0,0.00')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesKey],'0,0.00')}</td>
                         <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsPrevWeeksKey],'0,0.00')}</td>
-                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesNextWeeksKey],'0,0.00')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesPrevWeeksKey],'0,0.00')}</td>
                         <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsNextWeeksKey],'0,0.00')}</td>
-                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[totalCasesKey],'0,0.00')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesNextWeeksKey],'0,0.00')}</td>
                         <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[totalDeathsKey],'0,0.00')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[totalCasesKey],'0,0.00')}</td>
                     </tr>); 
             });     
             const onClickShowRepublicanGovernors = () => setShowRepublicanGovernors(!showRepublicanGovernors);
@@ -149,36 +149,40 @@
                                     </div>
                                 </div>
                             </th>
-                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Daily New <br /> <SelectSevenDayAverage /></th>
+                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}><div style={{marginBottom: '3px'}}>Daily New</div> <div><SelectSevenDayAverage /></div></th>
                             <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Past <SelectPastNumberOfWeeks /> Week{pastNumberOfWeeks > 1 ? 's' : ''}</th>
                             <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next {pastNumberOfWeeks} Week{pastNumberOfWeeks > 1 ? 's' : ''}</th>
                             <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Total to Date</th>
                         </tr>
                         <tr>
-                            <th style={{borderLeft: '1px dotted #E1E1E1'}} className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
-                                <a onClick={() => sortStatesDataBy(newCasesKey, false)}><SortIcon colName={newCasesKey} sortOrder={statesDataSortOrder} />Cases</a>
-                            </th>
                             <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
                                 <a onClick={() => sortStatesDataBy(newDeathsKey, false)}><SortIcon colName={newDeathsKey} sortOrder={statesDataSortOrder} />Deaths</a>
                             </th>
-                            <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
-                                <a onClick={() => sortStatesDataBy(newCasesPrevWeeksKey, false)}><SortIcon colName={newCasesPrevWeeksKey} sortOrder={statesDataSortOrder} />Cases</a>
+                            <th style={{borderLeft: '1px dotted #E1E1E1'}} className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                                <a onClick={() => sortStatesDataBy(newCasesKey, false)}><SortIcon colName={newCasesKey} sortOrder={statesDataSortOrder} />Cases</a>
                             </th>
+
                             <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
                                 <a onClick={() => sortStatesDataBy(newDeathsPrevWeeksKey, false)}><SortIcon colName={newDeathsPrevWeeksKey} sortOrder={statesDataSortOrder} />Deaths</a>
                             </th>
                             <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
-                                <a onClick={() => sortStatesDataBy(newCasesNextWeeksKey, false)}><SortIcon colName={newCasesNextWeeksKey} sortOrder={statesDataSortOrder} />Cases</a>
+                                <a onClick={() => sortStatesDataBy(newCasesPrevWeeksKey, false)}><SortIcon colName={newCasesPrevWeeksKey} sortOrder={statesDataSortOrder} />Cases</a>
                             </th>
+
                             <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
                                 <a onClick={() => sortStatesDataBy(newDeathsNextWeeksKey, false)}><SortIcon colName={newDeathsNextWeeksKey} sortOrder={statesDataSortOrder} />Deaths</a>
                             </th>
                             <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
-                                <a onClick={() => sortStatesDataBy(totalCasesKey, false)}><SortIcon colName={totalCasesKey} sortOrder={statesDataSortOrder} />Cases</a>
+                                <a onClick={() => sortStatesDataBy(newCasesNextWeeksKey, false)}><SortIcon colName={newCasesNextWeeksKey} sortOrder={statesDataSortOrder} />Cases</a>
                             </th>
+
                             <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
                                 <a onClick={() => sortStatesDataBy(totalDeathsKey, false)}><SortIcon colName={totalDeathsKey} sortOrder={statesDataSortOrder} />Deaths</a>
                             </th>
+                            <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                                <a onClick={() => sortStatesDataBy(totalCasesKey, false)}><SortIcon colName={totalCasesKey} sortOrder={statesDataSortOrder} />Cases</a>
+                            </th>
+
                         </tr>                      
                     </thead>
                     <tbody>
@@ -198,11 +202,11 @@
                 return(
                         <div class="ui buttons" style={{marginRight: '10px', marginBottom: '10px'}}>
                             <button onClick={() => onClickCasesOrDeaths('casesAndDeaths')} 
-                                class={`ui button`+(casesOrDeaths == 'casesAndDeaths' ? ' active' : '')}>Cases and Deaths</button>
+                                class={`ui button`+(casesOrDeaths == 'casesAndDeaths' ? ' active' : '')}>Deaths and Cases</button>
+                            <button onClick={() => onClickCasesOrDeaths('deaths')} 
+                                class={`ui button`+(casesOrDeaths == 'deaths' ? ' active' : '')}>Deaths Only</button>                            
                             <button onClick={() => onClickCasesOrDeaths('cases')} 
                                 class={`ui button`+(casesOrDeaths == 'cases' ? ' active' : '')}>Cases Only</button>
-                            <button onClick={() => onClickCasesOrDeaths('deaths')} 
-                                class={`ui button`+(casesOrDeaths == 'deaths' ? ' active' : '')}>Deaths Only</button>
                         </div>);
             }
 
