@@ -32,8 +32,7 @@
             };
             const [statesData, setStatesData] = React.useState(US_RECORDS);
             const [statesDataSortOrder, setStatesDataSortOrder] = React.useState({});
-            console.log(statesDataSortOrder);
-            if (Object.keys(statesDataSortOrder).length === 0) sortStatesDataBy('Deaths_100k', false);
+            if (Object.keys(statesDataSortOrder).length === 0) sortStatesDataBy('NewDeaths_100k', false);
             const [show7DayAvg, setShow7DayAvg] = React.useState(false);
             const onClickShowSevenDayAvg = value => setShow7DayAvg(value); 
             const newCasesKey = getNewCasesKey(showPer100k, show7DayAvg);
@@ -43,7 +42,7 @@
             const SelectSevenDayAverage = () => {
                 return(<div id="sevenDayAverageMenu" class="ui buttons">
                         <button onClick={() => onClickShowSevenDayAvg(false)} 
-                                class={`ui button`+(show7DayAvg == false ? ' active' : '')}>Raw Total</button>
+                                class={`ui button`+(show7DayAvg == false ? ' active' : '')}>Today's Total</button>
                         <button onClick={() => onClickShowSevenDayAvg(true)} 
                                 class={`ui button`+(show7DayAvg == true ? ' active' : '')}>7-day avg</button>
                       </div>)
