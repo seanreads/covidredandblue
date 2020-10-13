@@ -18,20 +18,21 @@
         function StatesTable({showCasesOrDeaths, showPer100k}) {
             const sortStatesDataBy = (prop, ascending = true) => {
                 const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: ascending};
-                setStatesDataSortOrder({...statesDataSortOrder, ...propSortOrder});
+                setStatesDataSortOrder({...propSortOrder});
                 let sortedData = [...statesData].sort((a, b) => a[prop] > b[prop] ? 1 : -1);
                 if (propSortOrder[prop] == false) sortedData.reverse();
                 setStatesData(sortedData);
             };
             const sortStatesDataByGovernmentBranch = prop => {
                 const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: true};
-                setStatesDataSortOrder({...statesDataSortOrder, ...propSortOrder});
+                setStatesDataSortOrder({...propSortOrder});
                 let sortedData = [...statesData].sort((a, b) => a[prop] > b[prop] ? 1 : (a[prop] == b[prop]) ? ((a['Control'] > b['Control']) ? 1 : -1) : -1);
                 if (propSortOrder[prop] == false) sortedData.reverse();
                 setStatesData(sortedData);
             };
             const [statesData, setStatesData] = React.useState(US_RECORDS);
             const [statesDataSortOrder, setStatesDataSortOrder] = React.useState({});
+            console.log(statesDataSortOrder);
             if (Object.keys(statesDataSortOrder).length === 0) sortStatesDataBy('Deaths_100k', false);
             const [show7DayAvg, setShow7DayAvg] = React.useState(false);
             const onClickShowSevenDayAvg = value => setShow7DayAvg(value); 
@@ -105,21 +106,33 @@
             const onClickShowDemocratGovernors = () => setShowDemocratGovernors(!showDemocratGovernors);
             const onClickShowRepublicanLegislatures = () => setShowRepublicanLegislatures(!showRepublicanLegislatures);
             const onClickShowDemocratLegislatures = () => setShowDemocratLegislatures(!showDemocratLegislatures);
+            const SortIcon = ({colName, sortOrder, arrowStyle = 'amount'}) => {
+                let classes = 'sort icon disabled';
+                if (sortOrder.hasOwnProperty(colName)) {
+                    if (sortOrder[colName] == true) {
+                        classes = 'sort icon down';
+                    }
+                    else if (sortOrder[colName] == false) {
+                        classes = 'sort icon up';
+                    } 
+                }  
+                return(<i style={{textDecoration: 'none'}} className={classes}></i>); 
+            }
             return (
                 <table className="ui celled table unstackable">
                     <thead>
                         <tr>
                             <th style={{width: '100px', textAlign: 'left', paddingLeft: '5px'}} rowSpan="2">
                                 <div>
-                                    <div style={{marginBottom: '5px'}}><a class="ui label" style={{paddingLeft: '0px', fontSize: '14px', fontWeight: 'strong !important'}} onClick={() => sortStatesDataBy("State", false)}>State</a> </div>
-                                    <div><span style={{fontWeight: 'normal', fontSize: '0.85em'}}><a style={{paddingLeft: '0px',paddingTop:'3px'}}class="ui label" onClick={() => sortStatesDataBy("Population", false)}>Population</a></span></div>
+                                    <div style={{marginBottom: '5px'}}><a class="ui label" style={{paddingLeft: '0px', fontSize: '14px', fontWeight: 'strong !important'}} onClick={() => sortStatesDataBy("State", false)}><SortIcon colName='State' sortOrder={statesDataSortOrder} />State</a> </div>
+                                    <div><span style={{fontWeight: 'normal', fontSize: '0.85em'}}><a style={{paddingLeft: '0px',paddingTop:'3px'}}class="ui label" onClick={() => sortStatesDataBy("Population", false)}><SortIcon colName='Population' sortOrder={statesDataSortOrder} />Population</a></span></div>
                                 </div>
                             </th>
                             <th style={{borderLeft: 'none'}} rowSpan="2">
                                 <div>
                                     <div style={{marginBottom: '5px'}}>
                                         <a id="governorLabel" class="ui label" onClick={() => sortStatesDataByGovernmentBranch("Governor")}>
-                                            <i class="user icon"></i>Governor
+                                            <SortIcon colName='Governor' sortOrder={statesDataSortOrder} /><i class="user icon"></i>Governor
                                         </a>
                                         <span style={{marginLeft: '8px'}} class="ui buttons">
                                             <button onClick={onClickShowDemocratGovernors} style={{fontSize: '10px'}} class={`govt democrat ui button` + (showDemocratGovernors == true ? ' active' : ' inactive')}>D</button>
@@ -128,7 +141,7 @@
                                     </div>
                                     <div>
                                         <a id="legislatureLabel" class="ui label" onClick={() => sortStatesDataByGovernmentBranch("Legislature")}>
-                                            <i class="university icon"></i>Legislature
+                                            <SortIcon colName='Legislature' sortOrder={statesDataSortOrder} /><i class="university icon"></i>Legislature
                                         </a>
                                         <span class="ui buttons">
                                             <button onClick={onClickShowDemocratLegislatures} style={{fontSize: '10px'}} class={`govt democrat ui button` + (showDemocratLegislatures == true ? ' active' : ' inactive')}>D</button>
@@ -144,28 +157,28 @@
                         </tr>
                         <tr>
                             <th style={{borderLeft: '1px dotted #E1E1E1'}} className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
-                                <a onClick={() => sortStatesDataBy(newCasesKey, false)}>Cases</a>
+                                <a onClick={() => sortStatesDataBy(newCasesKey, false)}><SortIcon colName={newCasesKey} sortOrder={statesDataSortOrder} />Cases</a>
                             </th>
                             <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
-                                <a onClick={() => sortStatesDataBy(newDeathsKey, false)}>Deaths</a>
+                                <a onClick={() => sortStatesDataBy(newDeathsKey, false)}><SortIcon colName={newDeathsKey} sortOrder={statesDataSortOrder} />Deaths</a>
                             </th>
                             <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
-                                <a onClick={() => sortStatesDataBy(newCasesPrevWeeksKey, false)}>Cases</a>
+                                <a onClick={() => sortStatesDataBy(newCasesPrevWeeksKey, false)}><SortIcon colName={newCasesPrevWeeksKey} sortOrder={statesDataSortOrder} />Cases</a>
                             </th>
                             <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
-                                <a onClick={() => sortStatesDataBy(newDeathsPrevWeeksKey, false)}>Deaths</a>
+                                <a onClick={() => sortStatesDataBy(newDeathsPrevWeeksKey, false)}><SortIcon colName={newDeathsPrevWeeksKey} sortOrder={statesDataSortOrder} />Deaths</a>
                             </th>
                             <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
-                                <a onClick={() => sortStatesDataBy(newCasesNextWeeksKey, false)}>Cases</a>
+                                <a onClick={() => sortStatesDataBy(newCasesNextWeeksKey, false)}><SortIcon colName={newCasesNextWeeksKey} sortOrder={statesDataSortOrder} />Cases</a>
                             </th>
                             <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
-                                <a onClick={() => sortStatesDataBy(newDeathsNextWeeksKey, false)}>Deaths</a>
+                                <a onClick={() => sortStatesDataBy(newDeathsNextWeeksKey, false)}><SortIcon colName={newDeathsNextWeeksKey} sortOrder={statesDataSortOrder} />Deaths</a>
                             </th>
                             <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
-                                <a onClick={() => sortStatesDataBy(totalCasesKey, false)}>Cases</a>
+                                <a onClick={() => sortStatesDataBy(totalCasesKey, false)}><SortIcon colName={totalCasesKey} sortOrder={statesDataSortOrder} />Cases</a>
                             </th>
                             <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
-                                <a onClick={() => sortStatesDataBy(totalDeathsKey, false)}>Deaths</a>
+                                <a onClick={() => sortStatesDataBy(totalDeathsKey, false)}><SortIcon colName={totalDeathsKey} sortOrder={statesDataSortOrder} />Deaths</a>
                             </th>
                         </tr>                      
                     </thead>
