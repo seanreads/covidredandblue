@@ -68,21 +68,19 @@
             const [showDemocratGovernors, setShowDemocratGovernors] = React.useState(true);
             const [showRepublicanLegislatures, setShowRepublicanLegislatures] = React.useState(true);
             const [showDemocratLegislatures, setShowDemocratLegislatures] = React.useState(true);
-            const govtRowShowHide = {showRepublicanGovernors, showDemocratGovernors, showDemocratLegislatures, showRepublicanLegislatures}
+            const govtRowShowHideInfo = {showRepublicanGovernors, showDemocratGovernors, showDemocratLegislatures, showRepublicanLegislatures}
 
-            const statesRows = statesData.map((record) => { 
-                let governorColor = 'gray';
-                if (record['Governor'] == 'R')
-                    governorColor = 'red';
-                else if (record['Governor'] == 'D')
-                    governorColor = 'blue';
-                let legislatureColor = 'gray';
-                if (record['Legislature'] == 'R')
-                    legislatureColor = 'red';
-                else if (record['Legislature'] == 'D')
-                    legislatureColor = 'blue';                    
+            const [statePage, setStatePage] = React.useState({number: 1, start: 0, end: 9});
+            const onClickSetPage = (number, start, end) => { 
+                console.log(number, start, end)
+                setStatePage({number: number, start: start, end: end}); 
+            }
+            const visibleRecords = statesData.filter(record => govtRowShowHide(record, govtRowShowHideInfo));
+            const statesRows = visibleRecords.slice(statePage.start, statePage.end+1).map((record) => { 
+                const governorColor = getRowColorForGovernor(record);
+                const legislatureColor = getRowColorForLegislature(record);
                 return(
-                    <tr key={record["State"]} className={govtRowShowHideClass(record, govtRowShowHide) + ' ' + rowClassForPartyControl(record["Control"])}>
+                    <tr key={record["State"]} className={rowClassForPartyControl(record["Control"])}>
                         <th style={{width: '100px'}} className="stateName">
                             <div>{record["State"]}</div>
                             <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(record["Population"],'0,0')}</span></div>
@@ -100,7 +98,23 @@
                         <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[totalDeathsKey],'0,0')}</td>
                         <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[totalCasesKey],'0,0')}</td>
                     </tr>); 
-            });     
+            }); 
+            let rowCount = 0;
+            let pageNumber = 1;
+            let startNumber = 0;
+            let endNumber = 9;  
+            const paginationLinks = statesData.reduce((links, record) => {
+                rowCount += 1;
+                if ((rowCount % 10) == 0) {
+                    links.push(<a onClick={() => onClickSetPage(pageNumber,startNumber,endNumber)} className={'item' + (statePage.number == pageNumber ? ' active' : '')}>
+                        {pageNumber}
+                    </a>);
+                    pageNumber += 1;
+                    startNumber += 10;
+                    endNumber += 10;
+                }
+                return links; 
+            }, []);
             const onClickShowRepublicanGovernors = () => setShowRepublicanGovernors(!showRepublicanGovernors);
             const onClickShowDemocratGovernors = () => setShowDemocratGovernors(!showDemocratGovernors);
             const onClickShowRepublicanLegislatures = () => setShowRepublicanLegislatures(!showRepublicanLegislatures);
@@ -119,6 +133,7 @@
             }
 
             return (
+                <div>
                 <table className="ui celled table unstackable">
                     <thead>
                         <tr>
@@ -190,6 +205,10 @@
                         {statesRows}
                     </tbody>
                 </table>
+                <div className="ui pagination menu">
+                    {paginationLinks}
+                </div>
+                </div>
             )
         }
 

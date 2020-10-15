@@ -72,18 +72,36 @@ const getNewDeathsKey = (showPer100k, show7DayAvg) => {
 const getTotalCasesKey = showPer100k => showPer100k ? 'Cases_100k' : 'Cases';
 const getTotalDeathsKey = showPer100k => showPer100k ? 'Deaths_100k' : 'Deaths';
 
-const govtRowShowHideClass = (record, govtRowShowHide) => {
+const govtRowShowHide = (record, govtRowShowHide) => {
 
     let showRow = true;
     
-        if ((record['Governor'] == 'D' || record['Governor'] == 'NA') && govtRowShowHide['showDemocratGovernors'] == false) 
-            showRow = false;
-        if ((record['Legislature'] == 'D' || record['Legislature'] == 'NA') && govtRowShowHide['showDemocratLegislatures'] == false)
-            showRow = false;
-        if ((record['Governor'] == 'R' || record['Governor'] == 'NA') && govtRowShowHide['showRepublicanGovernors'] == false)
-            showRow = false;
-        if ((record['Legislature'] == 'R' || record['Legislature'] == 'NA') && govtRowShowHide['showRepublicanLegislatures'] == false)
-            showRow = false;
+    if ((record['Governor'] == 'D' || record['Governor'] == 'NA') && govtRowShowHide['showDemocratGovernors'] == false) 
+        showRow = false;
+    if ((record['Legislature'] == 'D' || record['Legislature'] == 'NA') && govtRowShowHide['showDemocratLegislatures'] == false)
+        showRow = false;
+    if ((record['Governor'] == 'R' || record['Governor'] == 'NA') && govtRowShowHide['showRepublicanGovernors'] == false)
+        showRow = false;
+    if ((record['Legislature'] == 'R' || record['Legislature'] == 'NA') && govtRowShowHide['showRepublicanLegislatures'] == false)
+        showRow = false;
 
-    return (showRow == true ? 'showRow' : 'hideRow');
+    return showRow;
+}
+
+const getRowColorForGovernor = record => {
+    let governorColor = 'gray';
+    if (record['Governor'] == 'R')
+        governorColor = 'red';
+    else if (record['Governor'] == 'D')
+        governorColor = 'blue';
+    return governorColor;
+}
+
+const getRowColorForLegislature = record => {
+    let legislatureColor = 'gray';
+    if (record['Legislature'] == 'R')
+        legislatureColor = 'red';
+    else if (record['Legislature'] == 'D')
+        legislatureColor = 'blue';
+    return legislatureColor;
 }
