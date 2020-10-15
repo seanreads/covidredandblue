@@ -1,4 +1,24 @@
-const formatNumber = (number,mask) => isNaN(number) ? '--' : numeral(number).format(mask);
+function isInt(n) {
+    return n % 1 === 0;
+ }
+
+function isFloat(n){
+    return Number(n) === n && n % 1 !== 0;
+}
+
+const formatNumber = (number,mask) => {
+    let retVal;
+    if (isFloat(number)) {
+       retVal = numeral(number).format('0,0.00');
+    }
+    else if (isInt(number)) {
+        retVal = numeral(number).format('0,0')
+    }
+    else {
+        retVal = '--';
+    }
+    return retVal;
+}
 const formatPercentage = (number,mask) => isNaN(number) ? '--' : numeral(number).format(mask);
 
 const showOrHideCases = showCasesOrDeaths => ['cases','casesAndDeaths'].includes(showCasesOrDeaths) ? 'showCell' : 'hideCell';
