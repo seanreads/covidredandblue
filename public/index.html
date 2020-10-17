@@ -33,8 +33,8 @@
             };
             const [statesData, setStatesData] = React.useState(US_RECORDS);
             const [statesDataSortOrder, setStatesDataSortOrder] = React.useState({});
-            if (Object.keys(statesDataSortOrder).length === 0) sortStatesDataBy('NewDeaths_100k', false);
-            const [show7DayAvg, setShow7DayAvg] = React.useState(false);
+            if (Object.keys(statesDataSortOrder).length === 0) sortStatesDataBy('NewDeaths_7da_100k', false);
+            const [show7DayAvg, setShow7DayAvg] = React.useState(true);
             const onClickShowSevenDayAvg = value => setShow7DayAvg(value); 
             const newCasesKey = getNewCasesKey(showPer100k, show7DayAvg);
             const newDeathsKey = getNewDeathsKey(showPer100k, show7DayAvg);
