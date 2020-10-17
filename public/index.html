@@ -118,6 +118,7 @@
                 }  
                 return(<i style={{textDecoration: 'none'}} className={classes}></i>); 
             }
+            console.log('state update?');
             return (
                 <table className="ui celled table unstackable">
                     <thead>
@@ -231,7 +232,7 @@
             const onClickReset = () => window.location.reload();
             return (<>
                         <Heading1 /> 
-                        <p>The virus is not partisan. Ignoring science can have tragic consequences. Here are the facts.</p>
+                        <h4>The virus is not partisan. Ignoring science can have tragic consequences.</h4> <p>Here are the facts, sorted by 7-day average deaths per 100K population. You can change the sorting.</p>
                         <SelectCasesOrDeaths /><SelectShowPer100k /><button onClick={onClickReset} style={{float: 'right'}} className='ui button'>Reset</button>
                         <StatesTable 
                             showCasesOrDeaths={casesOrDeaths} 
