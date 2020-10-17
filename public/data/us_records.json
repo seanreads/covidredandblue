@@ -1,4 +1,4 @@
-const US_RECORDS = [
+[
     {
         "State": "Alabama",
         "Date": "2020-10-13",
