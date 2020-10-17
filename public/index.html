@@ -239,7 +239,7 @@
             const [usRecordsData, setUsRecordsData] = React.useState({});
 
             React.useEffect(() => {
-                fetch("data/us_records.json")
+                fetch(`data/us_records.json?r=${Math.random()}`)
                 .then(res => res.json())
                 .then(
                     (result) => {
