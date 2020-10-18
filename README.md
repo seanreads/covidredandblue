@@ -1,6 +1,6 @@
 # COVID Red and Blue
 
-To update the the website's data, simply push new JSON files to the remote main branch. The following directions assume that you've cloned the repository and are running git commands from the root directory. It is assumed that you are running the latest stable version of git. This guide was tested using git 2.28.0.
+To update the the website's data, simply push new JSON files to the remote main branch. The following directions assume that you've cloned the repository and are running git commands from the project's root directory. It is assumed that you are running the latest stable version of git. This guide was tested using git 2.28.0.
 
 1. Pull the main branch to be sure you've got the latest code
 
