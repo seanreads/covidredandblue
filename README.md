@@ -6,7 +6,7 @@ To update the the website's data, simply push new JSON files to the remote main 
 
 ```
 git checkout main
-git pull main
+git pull origin main
 ```
 
 2. Copy the new JSON files into the data directory.
