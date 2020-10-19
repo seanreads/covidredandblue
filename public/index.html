@@ -70,11 +70,8 @@
             const [showDemocratLegislatures, setShowDemocratLegislatures] = React.useState(true);
             const govtRowShowHideInfo = {showRepublicanGovernors, showDemocratGovernors, showDemocratLegislatures, showRepublicanLegislatures}
 
-            const [statePage, setStatePage] = React.useState({number: 1, start: 0, end: 9});
-            const onClickSetPage = (number, start, end) => { 
-                console.log(number, start, end)
-                setStatePage({number: number, start: start, end: end}); 
-            }
+            const [statePage, setStatePage] = React.useState({number: 1, start: 0, end: 11});
+            const onClickSetPage = (number, start, end) => setStatePage({number: number, start: start, end: end}); 
             const visibleRecords = statesData.filter(record => govtRowShowHide(record, govtRowShowHideInfo));
             const statesRows = visibleRecords.slice(statePage.start, statePage.end+1).map((record) => { 
                 const governorColor = getRowColorForGovernor(record);
@@ -99,26 +96,23 @@
                         <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[totalCasesKey],'0,0')}</td>
                     </tr>); 
             }); 
-            let rowCount = 0;
-            let pageNumber = 1;
-            let startNumber = 0;
-            let endNumber = 9;  
-            const paginationLinks = statesData.reduce((links, record) => {
-                rowCount += 1;
-                if ((rowCount % 10) == 0) {
-                    links.push(<a onClick={() => onClickSetPage(pageNumber,startNumber,endNumber)} className={'item' + (statePage.number == pageNumber ? ' active' : '')}>
-                        {pageNumber}
-                    </a>);
-                    pageNumber += 1;
-                    startNumber += 10;
-                    endNumber += 10;
-                }
-                return links; 
-            }, []);
-            const onClickShowRepublicanGovernors = () => setShowRepublicanGovernors(!showRepublicanGovernors);
-            const onClickShowDemocratGovernors = () => setShowDemocratGovernors(!showDemocratGovernors);
-            const onClickShowRepublicanLegislatures = () => setShowRepublicanLegislatures(!showRepublicanLegislatures);
-            const onClickShowDemocratLegislatures = () => setShowDemocratLegislatures(!showDemocratLegislatures);
+
+            const onClickShowRepublicanGovernors = () => { 
+                setShowRepublicanGovernors(!showRepublicanGovernors);
+                setStatePage({number: 1, start: 0, end: 11});
+            }
+            const onClickShowDemocratGovernors = () => {
+                setShowDemocratGovernors(!showDemocratGovernors);
+                setStatePage({number: 1, start: 0, end: 11});
+            }
+            const onClickShowRepublicanLegislatures = () => {
+                setShowRepublicanLegislatures(!showRepublicanLegislatures);
+                setStatePage({number: 1, start: 0, end: 11});
+            }
+            const onClickShowDemocratLegislatures = () => {
+                setShowDemocratLegislatures(!showDemocratLegislatures);
+                setStatePage({number: 1, start: 0, end: 11});
+            }
             const SortIcon = ({colName, sortOrder, arrowStyle = 'amount'}) => {
                 let classes = 'sort icon disabled';
                 if (sortOrder.hasOwnProperty(colName)) {
@@ -206,7 +200,11 @@
                     </tbody>
                 </table>
                 <div className="ui pagination menu">
-                    {paginationLinks}
+                    {(visibleRecords.length > 0) ? <a onClick={() => onClickSetPage(1,0,11)} className={'item' + (statePage.number == 1 ? ' active' : '')}>1</a> : ''}
+                    {(visibleRecords.length > 12) ? <a onClick={() => onClickSetPage(2,12,23)} className={'item' + (statePage.number == 2 ? ' active' : '')}>2</a> : ''}
+                    {(visibleRecords.length > 24) ? <a onClick={() => onClickSetPage(3,24,35)} className={'item' + (statePage.number == 3 ? ' active' : '')}>3</a> : ''}
+                    {(visibleRecords.length > 36) ? <a onClick={() => onClickSetPage(4,36,47)} className={'item' + (statePage.number == 4 ? ' active' : '')}>4</a> : ''}
+                    {(visibleRecords.length > 48) ? <a onClick={() => onClickSetPage(5,48,59)} className={'item' + (statePage.number == 5 ? ' active' : '')}>5</a> : ''}
                 </div>
                 </div>
             )
