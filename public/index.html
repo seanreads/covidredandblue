@@ -73,11 +73,14 @@
             const [statePage, setStatePage] = React.useState({number: 1, start: 0, end: 11});
             const onClickSetPage = (number, start, end) => setStatePage({number: number, start: start, end: end}); 
             const visibleRecords = statesData.filter(record => govtRowShowHide(record, govtRowShowHideInfo));
+            let rowNum = statePage.start;
             const statesRows = visibleRecords.slice(statePage.start, statePage.end+1).map((record) => { 
+                rowNum += 1;
                 const governorColor = getRowColorForGovernor(record);
                 const legislatureColor = getRowColorForLegislature(record);
                 return(
                     <tr key={record["State"]} className={rowClassForPartyControl(record["Control"])}>
+                        <th className="rowNum">{rowNum}</th>
                         <th style={{width: '100px'}} className="stateName">
                             <div>{record["State"]}</div>
                             <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(record["Population"],'0,0')}</span></div>
@@ -128,10 +131,17 @@
 
             return (
                 <div>
+                    <div className="ui pagination menu">
+                        {(visibleRecords.length > 0) ? <a onClick={() => onClickSetPage(1,0,11)} className={'item' + (statePage.number == 1 ? ' active' : '')}>1</a> : ''}
+                        {(visibleRecords.length > 12) ? <a onClick={() => onClickSetPage(2,12,23)} className={'item' + (statePage.number == 2 ? ' active' : '')}>2</a> : ''}
+                        {(visibleRecords.length > 24) ? <a onClick={() => onClickSetPage(3,24,35)} className={'item' + (statePage.number == 3 ? ' active' : '')}>3</a> : ''}
+                        {(visibleRecords.length > 36) ? <a onClick={() => onClickSetPage(4,36,47)} className={'item' + (statePage.number == 4 ? ' active' : '')}>4</a> : ''}
+                        {(visibleRecords.length > 48) ? <a onClick={() => onClickSetPage(5,48,59)} className={'item' + (statePage.number == 5 ? ' active' : '')}>5</a> : ''}
+                    </div>
                 <table className="ui celled table unstackable">
                     <thead>
                         <tr>
-                            <th style={{width: '100px', textAlign: 'left', paddingLeft: '5px'}} rowSpan="2">
+                            <th style={{width: '100px', textAlign: 'left', paddingLeft: '5px'}} colSpan="2" rowSpan="2">
                                 <div>
                                     <div style={{marginBottom: '5px'}}><a class="ui label" style={{paddingLeft: '0px', fontSize: '14px', fontWeight: 'strong !important'}} onClick={() => sortStatesDataBy("State", true)}><SortIcon colName='State' sortOrder={statesDataSortOrder} />State</a> </div>
                                     <div><span style={{fontWeight: 'normal', fontSize: '0.85em'}}><a style={{paddingLeft: '0px',paddingTop:'3px'}}class="ui label" onClick={() => sortStatesDataBy("Population", true)}><SortIcon colName='Population' sortOrder={statesDataSortOrder} />Population</a></span></div>
@@ -206,7 +216,7 @@
                     {(visibleRecords.length > 36) ? <a onClick={() => onClickSetPage(4,36,47)} className={'item' + (statePage.number == 4 ? ' active' : '')}>4</a> : ''}
                     {(visibleRecords.length > 48) ? <a onClick={() => onClickSetPage(5,48,59)} className={'item' + (statePage.number == 5 ? ' active' : '')}>5</a> : ''}
                 </div>
-                </div>
+            </div>
             )
         }
 

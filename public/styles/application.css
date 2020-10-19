@@ -38,6 +38,12 @@ th, td {
     text-align: center;
 }
 
+th.rowNum {
+    background-color: white;
+    border-bottom: 1px solid #E1E1E1;
+    font-weight: normal;
+}
+
 th.colHeadsOne {
     text-align: center;
     border-left: 1px dotted #E1E1E1;
