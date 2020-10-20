@@ -1,0 +1,123 @@
+<html>
+    <head>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-180772922-1"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-180772922-1');
+        </script>
+        <meta property="og:title" content="COVID Red and Blue" />
+        <meta property="og:description" content="The virus is not partisan. Ignoring science can have tragic consequences." />
+        <meta property="og:image" content="https://covidredandblue.com/images/thumbnail.jpg" />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="600" />
+        <meta property="og:url" content="https://covidredandblue.com/index.html">
+        <meta name="twitter:card" content="summary_large_image"> 
+        <title>COVID Red and Blue | The virus is not partisan. Ignoring science can have tragic consequences. Here are the facts.</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" />
+        <link async rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css" />     
+        <link rel="stylesheet" href="styles/application.css" rel='stylesheet' type='text/css' />
+    </head>
+    <body>
+        <div id="root"></div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+        <script src="https://unpkg.com/react@16.12.0/umd/react.production.min.js"></script>
+        <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.production.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+        <script src="scripts/helper.js"></script>
+        <script type="text/babel">
+        function App () {
+
+            const Heading1 = () => {
+                return(
+                    <div class="ui grid">
+                        <div class="ten wide column">
+                            <h1 class="ui header" style={{cursor: 'pointer'}} onClick={() => window.location.href = 'index.html'}>
+                                <span style={{marginRight: '10px'}}>COVID <span style={{color: "red"}}>Red</span> and <span style={{color: "blue"}}>Blue</span></span>
+                            </h1>                
+                        </div>
+                        <div class="six wide column">
+                            <div class="ui secondary menu">
+                                <div class="ui stackable secondary right menu" style={{border: 'none', background: 'none'}}>
+                                    <a class="ui item" href="about.html" style={{color: 'rgba(0,0,0,.77)'}}>
+                                        <i class="info circle icon"></i> About Us
+                                    </a>
+                                    <a style={{color: 'rgba(0,0,0,.87)'}} href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="ui item twitter-share-button" data-show-count="false">
+                                        <i class="twitter icon"></i> Tweet
+                                    </a>
+                                    
+                                    <a style={{color: 'rgba(0,0,0,.87)'}} href="https://twitter.com/covidredandblue?ref_src=twsrc%5Etfw" class="ui item twitter-follow-button" data-show-count="false">
+                                        <i class="at icon"></i> Follow
+                                    </a>                         
+                                    <a style={{color: 'rgba(0,0,0,.87)'}} class="ui item" href="mailto:contact@covidredandblue.com">
+                                        <i class="envelope icon"></i> Contact
+                                    </a>
+                                    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8" />
+                                </div>
+                            </div>                
+                        </div>
+                    </div>
+                )
+            }
+
+                return(
+                        <>
+                            <Heading1 /> 
+                            <h2>About Us</h2>
+                            <div class="ui cards">
+                                <div class="card">
+                                    <div class="content">
+                                    <div class="header">Dan Sullivan</div>
+                                    <div class="meta">Software engineering and data science</div>
+                                    <div class="description">
+                                        Dan Sullivan has previously held positions in software engineering, data science, and trading. He holds a BA in Mathematics from Swarthmore College and an MS in Financial Mathematics and an MS in Computer Science from the University of Chicago.
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="content">
+                                    <div class="header">Sean O'Donnell</div>
+                                    <div class="meta">Web design and development</div>
+                                    <div class="description">
+                                        Sean O'Donnell is a web developer with experience working in medical education, software development, and online publishing. He has a B.A. from West Chester University of Pennsylvania and an M.S. from Philadelphia University.
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="content">
+                                    <div class="header">Richard Fortmann</div>
+                                    <div class="meta">Concept</div>
+                                    <div class="description">
+                                        Richard is a retired lawyer.
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+
+                            <a class="ui label large" style={{textDecoration: 'none'}} href='index.html'>
+                                <i class="arrow left icon"></i> Home
+                            </a>
+                        </>
+                );
+            }
+        
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+        </script>
+        <!-- The core Firebase JS SDK is always required and must be listed first -->
+        <script src="/__/firebase/7.22.1/firebase-app.js"></script>
+
+        <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+        <script src="/__/firebase/7.22.1/firebase-analytics.js"></script>
+
+        <!-- Initialize Firebase -->
+        <script src="/__/firebase/init.js"></script>
+    </body>
+</html>

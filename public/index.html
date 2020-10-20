@@ -240,10 +240,36 @@
 
             // Components
             const Heading1 = () => {
-                return(<h1 class="ui header">
-                        <span style={{marginRight: '10px'}}>COVID <span style={{color: "red"}}>Red</span> and <span style={{color: "blue"}}>Blue</span></span>
-                        <span class="ui green label">Data as of {moment(usRecordsData[0]['Date']).format('LL')}</span>
-                        </h1>);
+                return(
+                    <div class="ui grid">
+                        <div class="ten wide column">
+                            <h1 class="ui header">
+                                <span style={{marginRight: '10px'}}>COVID <span style={{color: "red"}}>Red</span> and <span style={{color: "blue"}}>Blue</span></span>
+                                <span class="ui green label">Data as of {moment(usRecordsData[0]['Date']).format('LL')}</span>
+                            </h1>                
+                        </div>
+                        <div class="six wide column">
+                            <div class="ui secondary menu">
+                                <div class="ui stackable secondary right menu" style={{border: 'none', background: 'none'}}>
+                                    <a class="ui item" href="about.html" style={{color: 'rgba(0,0,0,.77)'}}>
+                                        <i class="info circle icon"></i> About Us
+                                    </a>
+                                    <a style={{color: 'rgba(0,0,0,.87)'}} href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="ui item twitter-share-button" data-show-count="false">
+                                        <i class="twitter icon"></i> Tweet
+                                    </a>
+                                    
+                                    <a style={{color: 'rgba(0,0,0,.87)'}} href="https://twitter.com/covidredandblue?ref_src=twsrc%5Etfw" class="ui item twitter-follow-button" data-show-count="false">
+                                        <i class="at icon"></i> Follow
+                                    </a>                         
+                                    <a style={{color: 'rgba(0,0,0,.87)'}} class="ui item" href="mailto:contact@covidredandblue.com">
+                                        <i class="envelope icon"></i> Contact
+                                    </a>
+                                    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8" />
+                                </div>
+                            </div>                
+                        </div>
+                    </div>
+                )
             }
 
             const [casesOrDeaths, setCasesOrDeaths] = React.useState('casesAndDeaths');
