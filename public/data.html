@@ -68,36 +68,17 @@
                 return(
                         <>
                             <Heading1 /> 
-                            <h2>About Us</h2>
-                            <div class="ui cards">
-                                <div class="card">
-                                    <div class="content">
-                                    <div class="header">Dan Sullivan</div>
-                                    <div class="meta">Software engineering and data science</div>
-                                    <div class="description">
-                                        Dan Sullivan has previously held positions in software engineering, data science, and trading. He holds a BA in Mathematics from Swarthmore College and an MS in Financial Mathematics and an MS in Computer Science from the University of Chicago.
-                                    </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="content">
-                                    <div class="header">Sean O'Donnell</div>
-                                    <div class="meta">Web design and development</div>
-                                    <div class="description">
-                                        Sean O'Donnell is a web developer with experience working in medical education, software development, and online publishing. He has a B.A. from West Chester University of Pennsylvania and an M.S. from Philadelphia University.
-                                    </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="content">
-                                    <div class="header">Richard Fortmann</div>
-                                    <div class="meta">Concept</div>
-                                    <div class="description">
-                                        Richard Fortmann is a retired lawyer with an interest in public health policy.
-                                    </div>
-                                    </div>
+                            <h2>About the Data</h2>
+                            <div class="ui grid">
+                                <div class="twelve wide column" style={{lineHeight: '1.5em', fontSize: '14px'}}>
+                                    Existing data represents that which has been reported on the <a class="dataHref" href="https://coronavirus.jhu.edu/map.html">John's Hopkins University (JHU) Coronavirus Resource Center dashboard</a>.
+Projections are calculated using the most recent modeling put out by the <a class="dataHref" href="https://covid-19.bsvgateway.org">Los Alamos National Laboratory (LANL) COVID-19 Cases and Deaths Forecasts</a> website.
+Population data uses the most recent (July 1, 2019) estimates put out by the <a class="dataHref" href="https://www.census.gov/data/datasets/time-series/demo/popest/2010s-counties-total.html">United States Census Bureau</a>.
                                 </div>
                             </div>
+                            
+                                                   
+
                             <br />
 
                             <a class="ui label large" style={{textDecoration: 'none'}} href='index.html'>

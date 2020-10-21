@@ -29,6 +29,14 @@ strong {
     font-size: 18px;
 }
 
+.dataHref {
+    color: blue;
+}
+
+a:hover.dataHref {
+    color: red;
+}
+
 /* table stuff */
 table {
     border-collapse:collapse;
