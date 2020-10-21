@@ -31,10 +31,12 @@ strong {
 
 .dataHref {
     color: blue;
+    text-decoration: underline;
 }
 
 a:hover.dataHref {
     color: red;
+    text-decoration: underline;
 }
 
 /* table stuff */
