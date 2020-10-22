@@ -188,7 +188,7 @@
                             </th>
                             <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}><div style={{marginBottom: '3px'}}>Daily New</div> <div><SelectSevenDayAverage /></div></th>
                             <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Past <SelectPastNumberOfWeeks /> Week{pastNumberOfWeeks > 1 ? 's' : ''}</th>
-                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next {pastNumberOfWeeks} Week{pastNumberOfWeeks > 1 ? 's' : ''}<a class="ui mini label" data-tooltip="As modeled on LANL COVID-10 Cases and Deaths Forecasts" style={{verticalAlign: 'super'}}>1</a></th>
+                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next {pastNumberOfWeeks} Week{pastNumberOfWeeks > 1 ? 's' : ''}<a class="ui mini label" data-tooltip="As modeled on LANL COVID-19 Cases and Deaths Forecasts" style={{verticalAlign: 'super'}}>1</a></th>
                             <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Total to Date</th>
                         </tr>
                         <tr>
@@ -226,7 +226,7 @@
                         {statesRows}
                     </tbody>
                 </table>
-                <p style={{fontSize: '0.8em', float: 'right'}}><span style={{verticalAlign: 'super', fontSize: '0.8em'}}>1</span> As modeled on LANL COVID-10 Cases and Deaths Forecasts</p>
+                <p style={{fontSize: '0.8em', float: 'right'}}><span style={{verticalAlign: 'super', fontSize: '0.8em'}}>1</span> As modeled on LANL COVID-19 Cases and Deaths Forecasts</p>
                 <div className="ui pagination menu">
                     {(visibleRecords.length > 0) ? <a onClick={() => onClickSetPage(1,0,11)} className={'item' + (statePage.number == 1 ? ' active' : '')}>1</a> : ''}
                     {(visibleRecords.length > 12) ? <a onClick={() => onClickSetPage(2,12,23)} className={'item' + (statePage.number == 2 ? ' active' : '')}>2</a> : ''}
