@@ -81,6 +81,15 @@
                        </select>
                 )
             }
+            const [showPast100Days, setShowPast100Days] = React.useState(true);
+            const SelectPast100Days = () => {
+                return(<div id="past100DaysMenu" class="ui buttons">
+                        <button onClick={() => onClickShowPast100Days(false)} 
+                                class={`ui button`+(showPast100Days == false ? ' active' : '')}>Since July 1, 2020</button>
+                        <button onClick={() => onClickShowPast100Days(true)} 
+                                class={`ui button`+(showPast100Days == true ? ' active' : '')}>Past 100 Days</button>
+                      </div>)
+            }            
             const [showRepublicanGovernors, setShowRepublicanGovernors] = React.useState(true);
             const [showDemocratGovernors, setShowDemocratGovernors] = React.useState(true);
             const [showRepublicanLegislatures, setShowRepublicanLegislatures] = React.useState(true);
@@ -189,7 +198,7 @@
                             <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}><div style={{marginBottom: '3px'}}>Daily New</div> <div><SelectSevenDayAverage /></div></th>
                             <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Past <SelectPastNumberOfWeeks /> Week{pastNumberOfWeeks > 1 ? 's' : ''}</th>
                             <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next {pastNumberOfWeeks} Week{pastNumberOfWeeks > 1 ? 's' : ''}<a class="ui mini label" data-tooltip="As modeled on LANL COVID-19 Cases and Deaths Forecasts" style={{verticalAlign: 'super'}}>1</a></th>
-                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Total to Date</th>
+                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}><div style={{marginBottom: '3px'}}>Total to Date</div><div><SelectPast100Days /></div></th>
                         </tr>
                         <tr>
                             <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
