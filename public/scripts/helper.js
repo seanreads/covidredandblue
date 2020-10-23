@@ -69,8 +69,31 @@ const getNewDeathsKey = (showPer100k, show7DayAvg) => {
     return newDeathsKey;
 }
 
-const getTotalCasesKey = showPer100k => showPer100k ? 'Cases_100k' : 'Cases';
-const getTotalDeathsKey = showPer100k => showPer100k ? 'Deaths_100k' : 'Deaths';
+const getTotalCasesKey = (showPer100k, showPast100Days) => {
+    let totalCasesKey = '';
+    if (showPer100k && showPast100Days)
+        totalCasesKey = 'NewCases_prev100d_100k';
+    else if (showPer100k)
+        totalCasesKey = 'Cases_100k';
+    else if (showPast100Days)
+        totalCasesKey = 'NewCases_prev100d';
+    else
+        totalCasesKey = 'Cases';
+    return totalCasesKey;
+}
+
+const getTotalDeathsKey = (showPer100k, showPast100Days) => {
+    let totalDeathsKey = '';
+    if (showPer100k && showPast100Days)
+        totalDeathsKey = 'NewDeaths_prev100d_100k';
+    else if (showPer100k)
+        totalDeathsKey = 'Deaths_100k';
+    else if (showPast100Days)
+        totalDeathsKey = 'NewDeaths_prev100d';
+    else
+        totalDeathsKey = 'Deaths';
+    return totalDeathsKey;
+}
 
 const govtRowShowHide = (record, govtRowShowHide) => {
 
