@@ -54,8 +54,9 @@
             const onClickShowSevenDayAvg = value => setShow7DayAvg(value); 
             const newCasesKey = getNewCasesKey(showPer100k, show7DayAvg);
             const newDeathsKey = getNewDeathsKey(showPer100k, show7DayAvg);
-            const totalCasesKey = getTotalCasesKey(showPer100k);
-            const totalDeathsKey = getTotalDeathsKey(showPer100k);
+            const [showPast100Days, setShowPast100Days] = React.useState(true);
+            const totalCasesKey = getTotalCasesKey(showPer100k, showPast100Days);
+            const totalDeathsKey = getTotalDeathsKey(showPer100k, showPast100Days);
             const SelectSevenDayAverage = () => {
                 return(<div id="sevenDayAverageMenu" class="ui buttons">
                         <button onClick={() => onClickShowSevenDayAvg(false)} 
@@ -81,13 +82,13 @@
                        </select>
                 )
             }
-            const [showPast100Days, setShowPast100Days] = React.useState(true);
+            const onClickShowPast100Days = value => setShowPast100Days(value); 
             const SelectPast100Days = () => {
                 return(<div id="past100DaysMenu" class="ui buttons">
-                        <button onClick={() => onClickShowPast100Days(false)} 
-                                class={`ui button`+(showPast100Days == false ? ' active' : '')}>Since July 1, 2020</button>
                         <button onClick={() => onClickShowPast100Days(true)} 
                                 class={`ui button`+(showPast100Days == true ? ' active' : '')}>Past 100 Days</button>
+                        <button onClick={() => onClickShowPast100Days(false)} 
+                                class={`ui button`+(showPast100Days == false ? ' active' : '')}>Total</button>
                       </div>)
             }            
             const [showRepublicanGovernors, setShowRepublicanGovernors] = React.useState(true);
@@ -198,7 +199,7 @@
                             <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}><div style={{marginBottom: '3px'}}>Daily New</div> <div><SelectSevenDayAverage /></div></th>
                             <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Past <SelectPastNumberOfWeeks /> Week{pastNumberOfWeeks > 1 ? 's' : ''}</th>
                             <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next {pastNumberOfWeeks} Week{pastNumberOfWeeks > 1 ? 's' : ''}<a class="ui mini label" data-tooltip="As modeled on LANL COVID-19 Cases and Deaths Forecasts" style={{verticalAlign: 'super'}}>1</a></th>
-                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}><div style={{marginBottom: '3px'}}>Total to Date</div><div><SelectPast100Days /></div></th>
+                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}><SelectPast100Days /></th>
                         </tr>
                         <tr>
                             <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>

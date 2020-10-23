@@ -9,7 +9,7 @@ a, a:hover {
 
 /* menu */
 
-#sevenDayAverageMenu .button, #past100DaysMenu .button {
+#sevenDayAverageMenu .button {
     font-size: 10px;
 }
 
