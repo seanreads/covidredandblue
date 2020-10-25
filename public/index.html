@@ -441,6 +441,23 @@
                 )
             }
 
+            const Footer = () => {
+                return(
+
+  <div class="ui center aligned container" style={{marginTop: '50px',marginBottom: '50px'}}>
+    <div class="ui section divider"></div>
+    <div class="ui horizontal small divided link list">
+      <a class="item" href="http://semantic-ui.mit-license.org/" target="_blank">About the Data</a>
+      <a class="item" href="http://semantic-ui.mit-license.org/" target="_blank">About Us</a>
+      <a class="item" href="http://semantic-ui.mit-license.org/" target="_blank">Tweet</a>
+      <a class="item" href="http://semantic-ui.mit-license.org/" target="_blank">Follow</a>
+      <a class="item" href="http://semantic-ui.mit-license.org/" target="_blank">Contact</a>
+    </div>
+  </div>
+
+                )
+            }
+
             const [casesOrDeaths, setCasesOrDeaths] = React.useState('casesAndDeaths');
             const onClickCasesOrDeaths = (value) => setCasesOrDeaths(value)
 
@@ -520,7 +537,6 @@
                 return (<>Loading...</>)
             }
             else {
-                console.log(summaryRecordsData)
                 return(
                         <>
                             <Heading1 /> 
@@ -534,7 +550,8 @@
                             <SummaryTable 
                                 summaryRecordsData={summaryRecordsData} 
                                 showCasesOrDeaths={casesOrDeaths} 
-                                showPer100k={showPer100k} />                                
+                                showPer100k={showPer100k} />  
+                            <Footer />                              
                         </>
                 );
             }
