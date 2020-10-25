@@ -32,6 +32,150 @@
         <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
         <script src="scripts/helper.js"></script>
         <script type="text/babel">
+        function SummaryTable({summaryRecordsData, showCasesOrDeaths, showPer100k}) {
+            const sortSummaryDataBy = (prop, ascending = true) => {
+                const propSortOrder = (prop in summaryDataSortOrder) ? {[prop]: !summaryDataSortOrder[prop]} : {[prop]: ascending};
+                setSummaryDataSortOrder({...propSortOrder});
+                let sortedData = [...summaryData].sort((a, b) => a[prop] > b[prop] ? 1 : -1);
+                if (propSortOrder[prop] == false) sortedData.reverse();
+                setSummaryData(sortedData);
+            };
+            const [summaryData, setSummaryData] = React.useState(summaryRecordsData);
+            const [summaryDataSortOrder, setSummaryDataSortOrder] = React.useState({});
+            if (Object.keys(summaryDataSortOrder).length === 0) sortSummaryDataBy('NewDeaths_7da_100k', false);
+            const [show7DayAvg, setShow7DayAvg] = React.useState(true);
+            const onClickShowSevenDayAvg = value => setShow7DayAvg(value); 
+            const newCasesKey = getNewCasesKey(showPer100k, show7DayAvg);
+            const newDeathsKey = getNewDeathsKey(showPer100k, show7DayAvg);
+            const [showPast100Days, setShowPast100Days] = React.useState(true);
+            const totalCasesKey = getTotalCasesKey(showPer100k, showPast100Days);
+            const totalDeathsKey = getTotalDeathsKey(showPer100k, showPast100Days);
+            const SelectSevenDayAverage = () => {
+                return(<div id="sevenDayAverageMenu" class="ui buttons">
+                        <button onClick={() => onClickShowSevenDayAvg(false)} 
+                                class={`ui button`+(show7DayAvg == false ? ' active' : '')}>Today's Total</button>
+                        <button onClick={() => onClickShowSevenDayAvg(true)} 
+                                class={`ui button`+(show7DayAvg == true ? ' active' : '')}>7-day avg</button>
+                      </div>)
+            }
+            const [pastNumberOfWeeks, setPastNumberOfWeeks] = React.useState('6');
+            const onChangePastNumberOfWeeks = event => setPastNumberOfWeeks(event.target.value);
+            const newCasesPrevWeeksKey = getNewCasesPrevWeeksKey(pastNumberOfWeeks, showPer100k);
+            const newDeathsPrevWeeksKey = getNewDeathsPrevWeeksKey(pastNumberOfWeeks, showPer100k);
+            const newCasesNextWeeksKey = getNewCasesNextWeeksKey(pastNumberOfWeeks, showPer100k);
+            const newDeathsNextWeeksKey = getNewDeathsNextWeeksKey(pastNumberOfWeeks, showPer100k);
+            const SelectPastNumberOfWeeks = () => {
+                return(<select class="ui dropdown" onChange={onChangePastNumberOfWeeks} value={pastNumberOfWeeks}>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                       </select>
+                )
+            }        
+            const onClickShowPast100Days = value => setShowPast100Days(value); 
+            const SelectPast100Days = () => {
+                return(<div id="past100DaysMenu" class="ui buttons">
+                        <button onClick={() => onClickShowPast100Days(true)} 
+                                class={`ui button`+(showPast100Days == true ? ' active' : '')}>Past 100 Days</button>
+                        <button onClick={() => onClickShowPast100Days(false)} 
+                                class={`ui button`+(showPast100Days == false ? ' active' : '')}>Total</button>
+                      </div>)
+            }
+            let rowNum = 0;
+            const summaryRows = summaryData.map((record) => { 
+                rowNum += 1;
+                return(
+                    <tr key={record["State"]}>
+                        <th className="rowNum" style={{width: '30px'}}>{rowNum}</th>
+                        <th style={{width: '365px'}} className="stateName">
+                            <div>{record["State"]}</div>
+                            <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(record["Population"],'0,0')}</span></div>
+                        </th>
+                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsKey],'0,0')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesKey],'0,0')}</td>
+                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsPrevWeeksKey],'0,0')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesPrevWeeksKey],'0,0')}</td>
+                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsNextWeeksKey],'0,0')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesNextWeeksKey],'0,0')}</td>
+                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[totalDeathsKey],'0,0')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[totalCasesKey],'0,0')}</td>
+                    </tr>); 
+            });
+            
+            const SortIcon = ({colName, sortOrder, arrowStyle = 'amount'}) => {
+                let classes = 'sort icon disabled';
+                if (sortOrder.hasOwnProperty(colName)) {
+                    if (sortOrder[colName] == true) {
+                        classes = 'sort icon up';
+                    }
+                    else if (sortOrder[colName] == false) {
+                        classes = 'sort icon down';
+                    } 
+                }  
+                return(<i style={{textDecoration: 'none'}} className={classes}></i>); 
+            }
+            return (
+                <div>
+
+                <table className="ui celled table unstackable">
+                    <thead>
+                        <tr>
+                            <th style={{width: '100px', textAlign: 'left', paddingLeft: '5px'}} colspan ="2" rowSpan="2">
+                                <div>
+                                    <div style={{marginBottom: '5px'}}><a class="ui label" style={{paddingLeft: '0px', fontSize: '14px', fontWeight: 'strong !important'}} onClick={() => sortSummaryDataBy("State", true)}><SortIcon colName='State' sortOrder={summaryDataSortOrder} />Group</a> </div>
+                                    <div><span style={{fontWeight: 'normal', fontSize: '0.85em'}}><a style={{paddingLeft: '0px',paddingTop:'3px'}}class="ui label" onClick={() => sortSummaryDataBy("Population", true)}><SortIcon colName='Population' sortOrder={summaryDataSortOrder} />Population</a></span></div>
+                                </div>
+                            </th>
+                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}><div style={{marginBottom: '3px'}}>Daily New</div> <div><SelectSevenDayAverage /></div></th>
+                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Past <SelectPastNumberOfWeeks /> Week{pastNumberOfWeeks > 1 ? 's' : ''}</th>
+                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next {pastNumberOfWeeks} Week{pastNumberOfWeeks > 1 ? 's' : ''}<a class="ui mini label" data-tooltip="As modeled on LANL COVID-19 Cases and Deaths Forecasts" style={{verticalAlign: 'super'}}>1</a></th>
+                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}><SelectPast100Days /></th>
+                        </tr>
+                        <tr>
+                            <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
+                                <a onClick={() => sortSummaryDataBy(newDeathsKey, false)}><SortIcon colName={newDeathsKey} sortOrder={summaryDataSortOrder} />Deaths</a>
+                            </th>
+                            <th style={{borderLeft: '1px dotted #E1E1E1'}} className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                                <a onClick={() => sortSummaryDataBy(newCasesKey, false)}><SortIcon colName={newCasesKey} sortOrder={summaryDataSortOrder} />Cases</a>
+                            </th>
+
+                            <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
+                                <a onClick={() => sortSummaryDataBy(newDeathsPrevWeeksKey, false)}><SortIcon colName={newDeathsPrevWeeksKey} sortOrder={summaryDataSortOrder} />Deaths</a>
+                            </th>
+                            <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                                <a onClick={() => sortSummaryDataBy(newCasesPrevWeeksKey, false)}><SortIcon colName={newCasesPrevWeeksKey} sortOrder={summaryDataSortOrder} />Cases</a>
+                            </th>
+
+                            <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
+                                <a onClick={() => sortSummaryDataBy(newDeathsNextWeeksKey, false)}><SortIcon colName={newDeathsNextWeeksKey} sortOrder={summaryDataSortOrder} />Deaths</a>
+                            </th>
+                            <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                                <a onClick={() => sortSummaryDataBy(newCasesNextWeeksKey, false)}><SortIcon colName={newCasesNextWeeksKey} sortOrder={summaryDataSortOrder} />Cases</a>
+                            </th>
+
+                            <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
+                                <a onClick={() => sortSummaryDataBy(totalDeathsKey, false)}><SortIcon colName={totalDeathsKey} sortOrder={summaryDataSortOrder} />Deaths</a>
+                            </th>
+                            <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                                <a onClick={() => sortSummaryDataBy(totalCasesKey, false)}><SortIcon colName={totalCasesKey} sortOrder={summaryDataSortOrder} />Cases</a>
+                            </th>
+
+                        </tr>                      
+                    </thead>
+                    <tbody>
+                        {summaryRows}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colSpan="11" style={{backgroundColor: 'rgba(34,36,38,.1)'}}><p style={{fontSize: '0.8em', float: 'right'}}><span style={{verticalAlign: 'super', fontSize: '0.8em'}}>1</span> As modeled on LANL COVID-19 Cases and Deaths Forecasts</p></th></tr>
+                    </tfoot>
+                </table>
+            </div>
+            )            
+        }
         function StatesTable({usRecordsData, showCasesOrDeaths, showPer100k}) {
             const sortStatesDataBy = (prop, ascending = true) => {
                 const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: ascending};
@@ -90,7 +234,7 @@
                         <button onClick={() => onClickShowPast100Days(false)} 
                                 class={`ui button`+(showPast100Days == false ? ' active' : '')}>Total</button>
                       </div>)
-            }            
+            }
             const [showRepublicanGovernors, setShowRepublicanGovernors] = React.useState(true);
             const [showDemocratGovernors, setShowDemocratGovernors] = React.useState(true);
             const [showRepublicanLegislatures, setShowRepublicanLegislatures] = React.useState(true);
@@ -158,15 +302,20 @@
 
             return (
                 <div>
-                    <div className="ui pagination menu">
-                        {(visibleRecords.length > 0) ? <a onClick={() => onClickSetPage(1,0,11)} className={'item' + (statePage.number == 1 ? ' active' : '')}>1</a> : ''}
-                        {(visibleRecords.length > 12) ? <a onClick={() => onClickSetPage(2,12,23)} className={'item' + (statePage.number == 2 ? ' active' : '')}>2</a> : ''}
-                        {(visibleRecords.length > 24) ? <a onClick={() => onClickSetPage(3,24,35)} className={'item' + (statePage.number == 3 ? ' active' : '')}>3</a> : ''}
-                        {(visibleRecords.length > 36) ? <a onClick={() => onClickSetPage(4,36,47)} className={'item' + (statePage.number == 4 ? ' active' : '')}>4</a> : ''}
-                        {(visibleRecords.length > 48) ? <a onClick={() => onClickSetPage(5,48,59)} className={'item' + (statePage.number == 5 ? ' active' : '')}>5</a> : ''}
-                    </div>
+
                 <table className="ui celled table unstackable">
                     <thead>
+                        <tr>
+                            <th colSpan="11" style={{backgroundColor: 'rgba(34,36,38,.1)'}}>
+                                <div className="ui mini pagination menu">
+                                    {(visibleRecords.length > 0) ? <a onClick={() => onClickSetPage(1,0,11)} className={'item' + (statePage.number == 1 ? ' active' : '')}>1</a> : ''}
+                                    {(visibleRecords.length > 12) ? <a onClick={() => onClickSetPage(2,12,23)} className={'item' + (statePage.number == 2 ? ' active' : '')}>2</a> : ''}
+                                    {(visibleRecords.length > 24) ? <a onClick={() => onClickSetPage(3,24,35)} className={'item' + (statePage.number == 3 ? ' active' : '')}>3</a> : ''}
+                                    {(visibleRecords.length > 36) ? <a onClick={() => onClickSetPage(4,36,47)} className={'item' + (statePage.number == 4 ? ' active' : '')}>4</a> : ''}
+                                    {(visibleRecords.length > 48) ? <a onClick={() => onClickSetPage(5,48,59)} className={'item' + (statePage.number == 5 ? ' active' : '')}>5</a> : ''}
+                                </div>
+                            </th>
+                        </tr>
                         <tr>
                             <th style={{width: '100px', textAlign: 'left', paddingLeft: '5px'}} colSpan="2" rowSpan="2">
                                 <div>
@@ -174,7 +323,7 @@
                                     <div><span style={{fontWeight: 'normal', fontSize: '0.85em'}}><a style={{paddingLeft: '0px',paddingTop:'3px'}}class="ui label" onClick={() => sortStatesDataBy("Population", true)}><SortIcon colName='Population' sortOrder={statesDataSortOrder} />Population</a></span></div>
                                 </div>
                             </th>
-                            <th style={{borderLeft: 'none'}} rowSpan="2">
+                            <th style={{borderLeft: 'none', width: '250px'}} rowSpan="2">
                                 <div>
                                     <div style={{marginBottom: '5px'}}>
                                         <a id="governorLabel" class="ui label" onClick={() => sortStatesDataByGovernmentBranch("Governor")}>
@@ -235,15 +384,20 @@
                     <tbody>
                         {statesRows}
                     </tbody>
-                </table>
-                <p style={{fontSize: '0.8em', float: 'right'}}><span style={{verticalAlign: 'super', fontSize: '0.8em'}}>1</span> As modeled on LANL COVID-19 Cases and Deaths Forecasts</p>
-                <div className="ui pagination menu">
+                    <tfoot>
+                        <tr>
+                            <th colSpan="11" style={{backgroundColor: 'rgba(34,36,38,.1)'}}>
+                        <p style={{fontSize: '0.8em', float: 'right'}}><span style={{verticalAlign: 'super', fontSize: '0.8em'}}>1</span> As modeled on LANL COVID-19 Cases and Deaths Forecasts</p>
+                <div className="ui pagination mini menu">
                     {(visibleRecords.length > 0) ? <a onClick={() => onClickSetPage(1,0,11)} className={'item' + (statePage.number == 1 ? ' active' : '')}>1</a> : ''}
                     {(visibleRecords.length > 12) ? <a onClick={() => onClickSetPage(2,12,23)} className={'item' + (statePage.number == 2 ? ' active' : '')}>2</a> : ''}
                     {(visibleRecords.length > 24) ? <a onClick={() => onClickSetPage(3,24,35)} className={'item' + (statePage.number == 3 ? ' active' : '')}>3</a> : ''}
                     {(visibleRecords.length > 36) ? <a onClick={() => onClickSetPage(4,36,47)} className={'item' + (statePage.number == 4 ? ' active' : '')}>4</a> : ''}
                     {(visibleRecords.length > 48) ? <a onClick={() => onClickSetPage(5,48,59)} className={'item' + (statePage.number == 5 ? ' active' : '')}>5</a> : ''}
-                </div>
+                </div>             
+                </th></tr>
+                    </tfoot>
+                </table>
             </div>
             )
         }
@@ -318,8 +472,8 @@
 
             // Get the data
 
-            const [error, setError] = React.useState(null);
-            const [isLoaded, setIsLoaded] = React.useState(false);
+            const [usRecordsError, setUsRecordsError] = React.useState(null);
+            const [isUsRecordsLoaded, setIsUsRecordsLoaded] = React.useState(false);
             const [usRecordsData, setUsRecordsData] = React.useState({});
 
             React.useEffect(() => {
@@ -327,22 +481,46 @@
                 .then(res => res.json())
                 .then(
                     (result) => {
-                        setIsLoaded(true);
+                        setIsUsRecordsLoaded(true);
                         setUsRecordsData(result);
                     },
                 (error) => {
-                    setIsLoaded(true);
-                    setError(error);
+                    setIsUsRecordsLoaded(true);
+                    setUsRecordsError(error);
                 })
             }, [])
 
-            if (error) {
-                return <div>Error: {error.message}</div>
+            const [summaryRecordsError, setSummaryRecordsError] = React.useState(null);
+            const [isSummaryRecordsLoaded, setIsSummaryRecordsLoaded] = React.useState(false);
+            const [summaryRecordsData, setSummaryRecordsData] = React.useState({});
+
+            React.useEffect(() => {
+                fetch(`data/summary_records.json?r=${Math.random()}`)
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        setIsSummaryRecordsLoaded(true);
+                        setSummaryRecordsData(result);
+                    },
+                (error) => {
+                    setIsSummaryRecordsLoaded(true);
+                    setSummaryRecordsError(error);
+                })
+            }, [])            
+
+            if (usRecordsError) {
+                return <div>Error: {usRecordsError.message}</div>
             }
-            else if (!isLoaded || (usRecordsData[0] === undefined)) {
+            else if (summaryRecordsError) {
+                return <div>Error: {summaryRecordsError.message}</div>
+            } 
+            else if ( (!isUsRecordsLoaded || (usRecordsData[0] === undefined)) ||
+                      (!isSummaryRecordsLoaded || (summaryRecordsData[0] === undefined))
+                    ) {
                 return (<>Loading...</>)
             }
             else {
+                console.log(summaryRecordsData)
                 return(
                         <>
                             <Heading1 /> 
@@ -352,6 +530,11 @@
                                 usRecordsData={usRecordsData}
                                 showCasesOrDeaths={casesOrDeaths} 
                                 showPer100k={showPer100k} />
+                            <br />
+                            <SummaryTable 
+                                summaryRecordsData={summaryRecordsData} 
+                                showCasesOrDeaths={casesOrDeaths} 
+                                showPer100k={showPer100k} />                                
                         </>
                 );
             }
