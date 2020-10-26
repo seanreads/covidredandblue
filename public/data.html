@@ -34,6 +34,28 @@
         <script type="text/babel">
         function App () {
 
+            const Footer = () => {
+                return(
+
+                    <div class="ui center aligned container" style={{marginTop: '50px',marginBottom: '50px'}}>
+                        <div class="ui horizontal small divided link list">
+                            <a style={{textDecoration: 'none'}} class="item" href="data.html" target="_blank">About the Data</a>
+                            <a style={{textDecoration: 'none'}} class="item" href="about.html" target="_blank">About Us</a>
+                            <a style={{textDecoration: 'none', color: 'rgba(0,0,0,.87)', paddingLeft: '5px', paddingRight: '5px'}} href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="horizontally fitted ui item twitter-share-button" data-show-count="false">
+                                <i class="twitter icon"></i> Tweet
+                            </a>
+                            <a style={{textDecoration: 'none', color: 'rgba(0,0,0,.87)', paddingLeft: '5px', paddingRight: '5px'}} href="https://twitter.com/covidredandblue?ref_src=twsrc%5Etfw" class="horizontally fitted ui item twitter-follow-button" data-show-count="false">
+                                <i class="at icon"></i> Follow
+                            </a>                         
+                            <a style={{textDecoration: 'none', color: 'rgba(0,0,0,.87)', paddingLeft: '5px', paddingRight: '5px'}} class="horizontally fitted ui item" href="mailto:contact@covidredandblue.com">
+                                <i class="envelope icon"></i> Contact
+                            </a>
+                        </div>
+                    </div>
+
+                )
+            }
+
             const Heading1 = () => {
                 return(
                     <div class="ui grid">
@@ -87,6 +109,7 @@
                             <a class="ui label large" style={{textDecoration: 'none'}} href='index.html'>
                                 <i class="arrow left icon"></i> Home
                             </a>
+                            <Footer />
                         </>
                 );
             }
