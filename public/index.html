@@ -9,6 +9,7 @@
 
         gtag('config', 'UA-180772922-1');
         </script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
         <meta property="og:title" content="COVID Red and Blue" />
         <meta property="og:description" content="The virus is not partisan. Ignoring science can have tragic consequences." />
         <meta property="og:image" content="https://covidredandblue.com/images/thumbnail.jpg" />
@@ -100,14 +101,16 @@
                 }
                 return formatted;
             }
-            let rowNum = 0;
-            const summaryRows = summaryData.map((record) => { 
-                rowNum += 1;
+
+            const summaryDataParties = summaryData.filter(item => ['D','R'].includes(item['State']));
+
+            const footnote = {R: {partyName: 'Republican', number: '2'}, D: {partyName: 'Democratic', number: '3'}};
+
+            const summaryRows = summaryDataParties.map((record) => { 
                 return(
-                    <tr key={record["State"]}>
-                        <th className="rowNum" style={{width: '30px'}}>{rowNum}</th>
+                    <tr key={record["State"]} className={rowClassForPartyControl(record["State"])}>
                         <th style={{width: '350px'}} className="stateName">
-                            <div>{formatGroupName(record["State"])}</div>
+                            <div>{formatGroupName(record["State"])}<a class="ui mini label" data-tooltip={`Data is for all states with ${footnote[record["State"]]['partyName']} legislatures`} style={{verticalAlign: 'super'}}>{footnote[record["State"]]['number']}</a></div>
                             <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(record["Population"],'0,0')}</span></div>
                         </th>
                         <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsKey],'0,0')}</td>
@@ -120,7 +123,25 @@
                         <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[totalCasesKey],'0,0')}</td>
                     </tr>); 
             });
-            
+
+            const usSummaryData = summaryData.filter(item => item['State'] === 'US')[0];
+
+            const usSummaryRow = (
+                <tr key={usSummaryData["State"]}>
+                        <th style={{width: '380px'}} className="stateName">
+                            <div>{formatGroupName(usSummaryData["State"])}</div>
+                            <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(usSummaryData["Population"],'0,0')}</span></div>
+                        </th>
+                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(usSummaryData[newDeathsKey],'0,0')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(usSummaryData[newCasesKey],'0,0')}</td>
+                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(usSummaryData[newDeathsPrevWeeksKey],'0,0')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(usSummaryData[newCasesPrevWeeksKey],'0,0')}</td>
+                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(usSummaryData[newDeathsNextWeeksKey],'0,0')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(usSummaryData[newCasesNextWeeksKey],'0,0')}</td>
+                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(usSummaryData[totalDeathsKey],'0,0')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(usSummaryData[totalCasesKey],'0,0')}</td>
+                    </tr>)
+    
             const SortIcon = ({colName, sortOrder, arrowStyle = 'amount'}) => {
                 let classes = 'sort icon disabled';
                 if (sortOrder.hasOwnProperty(colName)) {
@@ -139,7 +160,7 @@
                 <table className="ui celled table unstackable">
                     <thead>
                         <tr>
-                            <th style={{textAlign: 'left', paddingLeft: '5px'}} colspan ="2" rowSpan="2">
+                            <th style={{textAlign: 'left', paddingLeft: '5px'}} rowSpan="2">
                                 <div>
                                     <div style={{marginBottom: '5px'}}><a class="ui label" style={{paddingLeft: '0px', fontSize: '14px', fontWeight: 'strong !important'}} onClick={() => sortSummaryDataBy("State", true)}><SortIcon colName='State' sortOrder={summaryDataSortOrder} />Group</a> </div>
                                     <div><span style={{fontWeight: 'normal', fontSize: '0.85em'}}><a style={{paddingLeft: '0px',paddingTop:'3px'}}class="ui label" onClick={() => sortSummaryDataBy("Population", true)}><SortIcon colName='Population' sortOrder={summaryDataSortOrder} />Population</a></span></div>
@@ -183,10 +204,17 @@
                     </thead>
                     <tbody>
                         {summaryRows}
+                        {usSummaryRow}
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colSpan="11" style={{backgroundColor: 'rgba(34,36,38,.1)'}}><p style={{fontSize: '0.8em', float: 'right'}}><span style={{verticalAlign: 'super', fontSize: '0.8em'}}>1</span> As modeled on LANL COVID-19 Cases and Deaths Forecasts</p></th></tr>
+                            <th colSpan="11" style={{backgroundColor: 'rgba(34,36,38,.1)'}}>
+                                <div style={{float: 'right'}}>
+                                    <div style={{fontSize: '0.8em'}}><span style={{verticalAlign: 'super', fontSize: '0.8em'}}>1</span> As modeled on LANL COVID-19 Cases and Deaths Forecasts</div>
+                                    <div style={{fontSize: '0.8em'}}><span style={{verticalAlign: 'super', fontSize: '0.8em'}}>2</span> Data is for all states with Republican legislatures</div>
+                                    <div style={{fontSize: '0.8em'}}><span style={{verticalAlign: 'super', fontSize: '0.8em'}}>3</span> Data is for all states with Democratic legislatures</div>
+                                </div>
+                            </th></tr>
                     </tfoot>
                 </table>
             </div>
@@ -558,16 +586,18 @@
                 return (<>Loading...</>)
             }
             else {
+                const usSummaryData = summaryRecordsData.filter(item => ['D', 'R', 'US'].includes(item['State']));
                 return(
                         <>
                             <Heading1 /> 
-                            <h4>The virus is not partisan. Ignoring science can have tragic consequences.</h4> <p>Here are the facts, sorted by 7-day average deaths per 100K population. You can change the sorting. Grey rows indicate split party control of state government.</p>
+                            <h4>The virus is not partisan. Ignoring science can have tragic consequences.</h4> <p>Here are the facts, sorted by 7-day average deaths per 100K population. You can change the sorting.</p>
                             <SelectCasesOrDeaths /><SelectShowPer100k /><button onClick={onClickReset} style={{float: 'right'}} className='ui button'>Reset</button>
                             <SummaryTable 
-                                summaryRecordsData={summaryRecordsData} 
+                                summaryRecordsData={usSummaryData} 
                                 showCasesOrDeaths={casesOrDeaths} 
                                 showPer100k={showPer100k} />  
                             <br />
+                            <p>Below, grey rows indicate split party control of state government.</p>
                             <StatesTable 
                                 usRecordsData={usRecordsData}
                                 showCasesOrDeaths={casesOrDeaths} 
