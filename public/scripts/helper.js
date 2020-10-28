@@ -27,11 +27,11 @@ const colSpanCasesAndDeaths = showCasesOrDeaths => ['casesAndDeaths'].includes(s
 
 const rowClassForPartyControl = (partyControl) => { 
     let className;
-    if (partyControl == 'R')
+    if (partyControl == 'R' || partyControl.startsWith('R_'))
         className = 'rowRepublicanControl';
-    else if (partyControl == 'D')
+    else if (partyControl == 'D' || partyControl.startsWith('D_'))
         className = 'rowDemocratControl';
-    else if (partyControl == 'S')
+    else if (partyControl == 'S' || partyControl.startsWith('S_'))
         className = 'rowSplitControl'
     else
         className = 'unknownControl'
@@ -111,6 +111,19 @@ const govtRowShowHide = (record, govtRowShowHide) => {
     return showRow;
 }
 
+const govtSummaryRowShowHide = (record, govtRowShowHide) => {
+    let showRow = true;
+    
+    if (record['State'].endsWith('_Governor') && govtRowShowHide['showGovernors'] == false) 
+        showRow = false;
+    if (record['State'].endsWith('_Legislature') && govtRowShowHide['showLegislatures'] == false) 
+        showRow = false;     
+    if (record['State'].endsWith('_Control') && govtRowShowHide['showStateControl'] == false) 
+        showRow = false;       
+
+    return showRow;
+}
+
 const getRowColorForGovernor = record => {
     let governorColor = 'gray';
     if (record['Governor'] == 'R')
@@ -127,4 +140,22 @@ const getRowColorForLegislature = record => {
     else if (record['Legislature'] == 'D')
         legislatureColor = 'blue';
     return legislatureColor;
+}
+
+const govtIconClassName = state => {
+    let className = '';
+    if (state == 'R_Governor')
+        className = 'redGovernor user big icon';
+    else if (state == 'D_Governor')
+        className = 'blueGovernor user big icon'
+    else if (state == 'R_Legislature')
+        className = 'redLegislature university big icon'        
+    else if (state == 'D_Legislature')
+        className = 'blueLegislature university big icon'
+    else if (state == 'S_Legislature')
+        className = 'grayLegislature university big icon'
+    else if (state == 'US') 
+        className = ''     
+
+    return className;
 }

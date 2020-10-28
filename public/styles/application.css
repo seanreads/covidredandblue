@@ -9,8 +9,13 @@ a, a:hover {
 
 /* menu */
 
-#sevenDayAverageMenu .button {
+#sevenDayAverageMenu .button,
+#toggleGovernmentMenu .button {
     font-size: 10px;
+}
+
+#toggleGovernmentMenu .button {
+    text-align: left;
 }
 
 fieldset {
@@ -46,6 +51,14 @@ table {
 th, td { 
     white-space: nowrap;
     text-align: center;
+}
+
+th.colOne, td.colOne {
+    width: 200px;
+}
+
+th.colTwo, td.colTwo {
+    width: 200px;
 }
 
 th.rowNum {

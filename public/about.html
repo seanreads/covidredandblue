@@ -9,6 +9,7 @@
 
         gtag('config', 'UA-180772922-1');
         </script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
         <meta property="og:title" content="COVID Red and Blue" />
         <meta property="og:description" content="The virus is not partisan. Ignoring science can have tragic consequences." />
         <meta property="og:image" content="https://covidredandblue.com/images/thumbnail.jpg" />
@@ -34,33 +35,54 @@
         <script type="text/babel">
         function App () {
 
+            const Footer = () => {
+                return(
+
+                    <div class="ui center aligned container" style={{marginTop: '50px',marginBottom: '50px'}}>
+                        <a href="index.html"><img style={{width: 'auto', height: '30px'}} src="/images/covid_red_and_blue_banner.png" class="ui centered image" /></a>
+                        <div class="ui horizontal small divided link list">
+                            <a style={{textDecoration: 'none'}} class="item" href="data.html" target="_blank">About the Data</a>
+                            <a style={{textDecoration: 'none'}} class="item" href="about.html" target="_blank">About Us</a>
+                            <a style={{textDecoration: 'none', color: 'rgba(0,0,0,.87)', paddingLeft: '5px', paddingRight: '5px'}} href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="horizontally fitted ui item twitter-share-button" data-show-count="false">
+                                <i class="twitter icon"></i> Tweet
+                            </a>
+                            <a style={{textDecoration: 'none', color: 'rgba(0,0,0,.87)', paddingLeft: '5px', paddingRight: '5px'}} href="https://twitter.com/covidredandblue?ref_src=twsrc%5Etfw" class="horizontally fitted ui item twitter-follow-button" data-show-count="false">
+                                <i class="at icon"></i> Follow
+                            </a>                         
+                            <a style={{textDecoration: 'none', color: 'rgba(0,0,0,.87)', paddingLeft: '5px', paddingRight: '5px'}} class="horizontally fitted ui item" href="mailto:contact@covidredandblue.com">
+                                <i class="envelope icon"></i> Contact
+                            </a>
+                        </div>
+                    </div>
+
+                )
+            }
+
             const Heading1 = () => {
                 return(
                     <div class="ui grid">
                         <div class="ten wide column">
-                            <h1 class="ui header" style={{cursor: 'pointer'}} onClick={() => window.location.href = 'index.html'}>
-                                <span style={{marginRight: '10px'}}>COVID <span style={{color: "red"}}>Red</span> and <span style={{color: "blue"}}>Blue</span></span>
-                            </h1>                
+                            <span style={{marginRight: '5px'}}><a href="index.html"><img valign="middle" src="images/covid_red_and_blue_banner.png" /></a></span>
                         </div>
                         <div class="six wide column">
                             <div class="ui secondary menu">
                                 <div class="ui stackable secondary right menu" style={{border: 'none', background: 'none'}}>
-                                    <a class="ui item" href="about.html" style={{color: 'rgba(0,0,0,.77)'}}>
+                                    <a class="horizontally fitted ui item" href="about.html" style={{color: 'rgba(0,0,0,.77)', paddingLeft: '5px', paddingRight: '5px'}}>
                                         <i class="info circle icon"></i> About Us
                                     </a>
-                                    <a style={{color: 'rgba(0,0,0,.87)'}} href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="ui item twitter-share-button" data-show-count="false">
+                                    <a style={{color: 'rgba(0,0,0,.87)', paddingLeft: '5px', paddingRight: '5px'}} href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="horizontally fitted ui item twitter-share-button" data-show-count="false">
                                         <i class="twitter icon"></i> Tweet
                                     </a>
                                     
-                                    <a style={{color: 'rgba(0,0,0,.87)'}} href="https://twitter.com/covidredandblue?ref_src=twsrc%5Etfw" class="ui item twitter-follow-button" data-show-count="false">
+                                    <a style={{color: 'rgba(0,0,0,.87)', paddingLeft: '5px', paddingRight: '5px'}} href="https://twitter.com/covidredandblue?ref_src=twsrc%5Etfw" class="horizontally fitted ui item twitter-follow-button" data-show-count="false">
                                         <i class="at icon"></i> Follow
                                     </a>                         
-                                    <a style={{color: 'rgba(0,0,0,.87)'}} class="ui item" href="mailto:contact@covidredandblue.com">
+                                    <a style={{color: 'rgba(0,0,0,.87)', paddingLeft: '5px', paddingRight: '5px'}} class="horizontally fitted ui item" href="mailto:contact@covidredandblue.com">
                                         <i class="envelope icon"></i> Contact
                                     </a>
                                     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8" />
                                 </div>
-                            </div>                
+                            </div>                 
                         </div>
                     </div>
                 )
@@ -117,6 +139,7 @@
                             <a class="ui label large" style={{textDecoration: 'none'}} href='index.html'>
                                 <i class="arrow left icon"></i> Home
                             </a>
+                            <Footer />
                         </>
                 );
             }

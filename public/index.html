@@ -9,6 +9,7 @@
 
         gtag('config', 'UA-180772922-1');
         </script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
         <meta property="og:title" content="COVID Red and Blue" />
         <meta property="og:description" content="The virus is not partisan. Ignoring science can have tragic consequences." />
         <meta property="og:image" content="https://covidredandblue.com/images/thumbnail.jpg" />
@@ -32,6 +33,224 @@
         <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
         <script src="scripts/helper.js"></script>
         <script type="text/babel">
+        function SummaryTable({summaryRecordsData, showCasesOrDeaths, showPer100k}) {
+            const [summaryData, setSummaryData] = React.useState(summaryRecordsData);
+            const [show7DayAvg, setShow7DayAvg] = React.useState(true);
+            const onClickShowSevenDayAvg = value => setShow7DayAvg(value); 
+            const newCasesKey = getNewCasesKey(showPer100k, show7DayAvg);
+            const newDeathsKey = getNewDeathsKey(showPer100k, show7DayAvg);
+            const [showPast100Days, setShowPast100Days] = React.useState(true);
+            const totalCasesKey = getTotalCasesKey(showPer100k, showPast100Days);
+            const totalDeathsKey = getTotalDeathsKey(showPer100k, showPast100Days);
+            const SelectSevenDayAverage = () => {
+                return(<div id="sevenDayAverageMenu" class="ui buttons">
+                        <button onClick={() => onClickShowSevenDayAvg(false)} 
+                                class={`ui button`+(show7DayAvg == false ? ' active' : '')}>Today's Total</button>
+                        <button onClick={() => onClickShowSevenDayAvg(true)} 
+                                class={`ui button`+(show7DayAvg == true ? ' active' : '')}>7-day avg</button>
+                      </div>)
+            }
+            const [pastNumberOfWeeks, setPastNumberOfWeeks] = React.useState('6');
+            const onChangePastNumberOfWeeks = event => setPastNumberOfWeeks(event.target.value);
+            const newCasesPrevWeeksKey = getNewCasesPrevWeeksKey(pastNumberOfWeeks, showPer100k);
+            const newDeathsPrevWeeksKey = getNewDeathsPrevWeeksKey(pastNumberOfWeeks, showPer100k);
+            const newCasesNextWeeksKey = getNewCasesNextWeeksKey(pastNumberOfWeeks, showPer100k);
+            const newDeathsNextWeeksKey = getNewDeathsNextWeeksKey(pastNumberOfWeeks, showPer100k);
+            const SelectPastNumberOfWeeks = () => {
+                return(<select class="ui dropdown" onChange={onChangePastNumberOfWeeks} value={pastNumberOfWeeks}>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                       </select>
+                )
+            }        
+            const onClickShowPast100Days = value => setShowPast100Days(value); 
+            const SelectPast100Days = () => {
+                return(<div id="past100DaysMenu" class="ui buttons">
+                        <button onClick={() => onClickShowPast100Days(true)} 
+                                class={`ui button`+(showPast100Days == true ? ' active' : '')}>Past 100 Days</button>
+                        <button onClick={() => onClickShowPast100Days(false)} 
+                                class={`ui button`+(showPast100Days == false ? ' active' : '')}>Total</button>
+                      </div>)
+            }
+            const formatGroupName = name => {
+                let formatted;
+                if (name == 'D_Governor') {
+                    formatted = 'Democrat Governor' 
+                }
+                else if (name == 'R_Governor') {
+                    formatted = 'Republican Governor'
+                } else if (name == 'D_Legislature') { 
+                    formatted = 'Democrat Legislature'
+                } else if (name == 'R_Legislature') {
+                    formatted = 'Republican Legislature'
+                } else if (name == 'S_Legislature') {
+                    formatted = 'Split Legislature'
+                } else if (name == 'D_Control') {
+                    formatted = 'Democrat-controlled States'
+                } else if (name == 'R_Control') {
+                    formatted = 'Republican-controlled States'                    
+                } else if (name == 'S_Control') {
+                    formatted = 'Split-controlled States'                  
+                } else if (name == 'US') {
+                    formatted = 'United States'
+                } else {
+                    formatted = name;
+                }
+                return formatted;
+            }
+
+            const SummaryRowIcons = ({state}) => {
+                let icons = '';
+                if (state == 'R_Governor')
+                    icons = <i aria-hidden="true" className="redGovernor user big icon"></i>;
+                else if (state == 'D_Governor')
+                    icons = <i aria-hidden="true" className="blueGovernor user big icon"></i>;
+                else if (state == 'R_Legislature')
+                    icons = <i aria-hidden="true" className="redLegislature university big icon"></i>;
+                else if (state == 'D_Legislature')
+                    icons = <i aria-hidden="true" className="blueLegislature university big icon"></i>;
+                else if (state == 'S_Legislature')
+                    icons = <i aria-hidden="true" className="grayLegislature university big icon"></i>;
+                else if (state == 'R_Control')
+                    icons = <><i aria-hidden="true" className="redGovernor user big icon"></i>
+                                <i aria-hidden="true" className="redLegislature university big icon"></i>
+                            </>; 
+                else if (state == 'D_Control')
+                    icons = <><i aria-hidden="true" className="blueGovernor user big icon"></i>
+                                <i aria-hidden="true" className="blueLegislature university big icon"></i>
+                            </>; 
+                else if (state == 'S_Control')
+                    icons = <><i aria-hidden="true" className="grayGovernor user big icon"></i>
+                                <i aria-hidden="true" className="grayLegislature university big icon"></i>
+                            </>;                                                                
+                else if (state == 'US')
+                    icons = <><img src='images/usa_flag_color-300x160.png' style={{width: '35px'}} /></>
+                else
+                    icons = ''
+                return(icons)
+            }
+
+            const [showGovernors, setShowGovernors] = React.useState(true);
+            const [showLegislatures, setShowLegislatures] = React.useState(false);
+            const [showStateControl, setShowStateControl] = React.useState(false);
+
+            const govtRowShowHideInfo = {showGovernors, showLegislatures, showStateControl}
+
+            const visibleRecords = summaryData.filter(record => govtSummaryRowShowHide(record, govtRowShowHideInfo));
+
+            const summaryRows = visibleRecords.map((record) => { 
+                return(
+                    <tr key={record["State"]} className={rowClassForPartyControl(record["State"])}>
+                        <th className="colOne stateName">
+                            <div>{formatGroupName(record["State"])}</div>
+                            <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(record["Population"],'0,0')}</span></div>
+                        </th>
+                        <td style={{borderLeft: 'none'}} className="governmentBranch">
+                            <SummaryRowIcons state={record["State"]} />
+                        </td>                        
+                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsKey],'0,0')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesKey],'0,0')}</td>
+                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsPrevWeeksKey],'0,0')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesPrevWeeksKey],'0,0')}</td>
+                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsNextWeeksKey],'0,0')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesNextWeeksKey],'0,0')}</td>
+                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[totalDeathsKey],'0,0')}</td>
+                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[totalCasesKey],'0,0')}</td>
+                    </tr>); 
+            });
+
+            const onClickShowGovernors = () => {
+                setShowGovernors(true);
+                setShowLegislatures(false);
+                setShowStateControl(false);
+            }
+
+            const onClickShowLegislatures = () => {
+                setShowGovernors(false);
+                setShowLegislatures(true);
+                setShowStateControl(false);
+            }
+
+            const onClickShowStateControl = () => {
+                setShowGovernors(false);
+                setShowLegislatures(false);
+                setShowStateControl(true);
+            }
+    
+            return (
+                <div>
+
+                <table className="ui celled table unstackable">
+                    <thead>
+                        <tr>
+                            <th className="colOne" style={{textAlign: 'left', paddingLeft: '5px'}} rowSpan="2">
+                                <div>
+                                    <div style={{paddingLeft:'10px', marginBottom: '5px'}}>Group</div>
+                                    <div><span style={{paddingLeft:'10px', fontWeight: 'normal', fontSize: '0.85em'}}>Population</span></div>
+                                </div>
+                            </th>
+                            <th className="colTwo" style={{borderLeft: 'none'}} rowSpan="2">
+                                <div>
+                                    <div id="toggleGovernmentMenu" class="ui buttons vertical">
+                                        <button onClick={onClickShowGovernors} class={`ui button` + (showGovernors ? ' active' : '')}><i class="user icon"></i>Governor</button>
+                                        <button onClick={onClickShowLegislatures} class={`ui button` + (showLegislatures ? ' active' : '')}><i class="university icon"></i>Legislature</button>
+                                        <button onClick={onClickShowStateControl} class={`ui button` + (showStateControl ? ' active' : '')}><i class="flag icon"></i>State Control</button>
+                                    </div>
+                                </div>
+                            </th>                            
+                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}><div style={{marginBottom: '3px'}}>Daily New</div> <div><SelectSevenDayAverage /></div></th>
+                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Past <SelectPastNumberOfWeeks /> Week{pastNumberOfWeeks > 1 ? 's' : ''}</th>
+                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next {pastNumberOfWeeks} Week{pastNumberOfWeeks > 1 ? 's' : ''}<a class="ui mini label" data-tooltip="As modeled on LANL COVID-19 Cases and Deaths Forecasts" style={{verticalAlign: 'super'}}>1</a></th>
+                            <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}><SelectPast100Days /></th>
+                        </tr>
+                        <tr>
+                            <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
+                                Deaths
+                            </th>
+                            <th style={{borderLeft: '1px dotted #E1E1E1'}} className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                                Cases
+                            </th>
+
+                            <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
+                                Deaths
+                            </th>
+                            <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                                Cases
+                            </th>
+
+                            <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
+                                Deaths
+                            </th>
+                            <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                                Cases
+                            </th>
+
+                            <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
+                                Deaths
+                            </th>
+                            <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
+                                Cases
+                            </th>
+
+                        </tr>                      
+                    </thead>
+                    <tbody>
+                        {summaryRows}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colSpan="11" style={{backgroundColor: 'rgba(34,36,38,.1)'}}>
+                                <p style={{fontSize: '0.8em', float: 'right'}}><span style={{verticalAlign: 'super', fontSize: '0.8em'}}>1</span> As modeled on LANL COVID-19 Cases and Deaths Forecasts</p>
+                            </th></tr>
+                    </tfoot>
+                </table>
+            </div>
+            )            
+        }
         function StatesTable({usRecordsData, showCasesOrDeaths, showPer100k}) {
             const sortStatesDataBy = (prop, ascending = true) => {
                 const propSortOrder = (prop in statesDataSortOrder) ? {[prop]: !statesDataSortOrder[prop]} : {[prop]: ascending};
@@ -90,7 +309,7 @@
                         <button onClick={() => onClickShowPast100Days(false)} 
                                 class={`ui button`+(showPast100Days == false ? ' active' : '')}>Total</button>
                       </div>)
-            }            
+            }
             const [showRepublicanGovernors, setShowRepublicanGovernors] = React.useState(true);
             const [showDemocratGovernors, setShowDemocratGovernors] = React.useState(true);
             const [showRepublicanLegislatures, setShowRepublicanLegislatures] = React.useState(true);
@@ -107,8 +326,8 @@
                 const legislatureColor = getRowColorForLegislature(record);
                 return(
                     <tr key={record["State"]} className={rowClassForPartyControl(record["Control"])}>
-                        <th className="rowNum">{rowNum}</th>
-                        <th style={{width: '100px'}} className="stateName">
+                        <th className="rowNum" style={{width: '30px'}}>{rowNum}</th>
+                        <th className="colOne stateName" style={{width: '150px'}}>
                             <div>{record["State"]}</div>
                             <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(record["Population"],'0,0')}</span></div>
                         </th>
@@ -158,23 +377,17 @@
 
             return (
                 <div>
-                    <div className="ui pagination menu">
-                        {(visibleRecords.length > 0) ? <a onClick={() => onClickSetPage(1,0,11)} className={'item' + (statePage.number == 1 ? ' active' : '')}>1</a> : ''}
-                        {(visibleRecords.length > 12) ? <a onClick={() => onClickSetPage(2,12,23)} className={'item' + (statePage.number == 2 ? ' active' : '')}>2</a> : ''}
-                        {(visibleRecords.length > 24) ? <a onClick={() => onClickSetPage(3,24,35)} className={'item' + (statePage.number == 3 ? ' active' : '')}>3</a> : ''}
-                        {(visibleRecords.length > 36) ? <a onClick={() => onClickSetPage(4,36,47)} className={'item' + (statePage.number == 4 ? ' active' : '')}>4</a> : ''}
-                        {(visibleRecords.length > 48) ? <a onClick={() => onClickSetPage(5,48,59)} className={'item' + (statePage.number == 5 ? ' active' : '')}>5</a> : ''}
-                    </div>
+
                 <table className="ui celled table unstackable">
                     <thead>
                         <tr>
-                            <th style={{width: '100px', textAlign: 'left', paddingLeft: '5px'}} colSpan="2" rowSpan="2">
+                            <th className="colOne" style={{textAlign: 'left', paddingLeft: '5px'}} colSpan="2" rowSpan="2">
                                 <div>
                                     <div style={{marginBottom: '5px'}}><a class="ui label" style={{paddingLeft: '0px', fontSize: '14px', fontWeight: 'strong !important'}} onClick={() => sortStatesDataBy("State", true)}><SortIcon colName='State' sortOrder={statesDataSortOrder} />State</a> </div>
                                     <div><span style={{fontWeight: 'normal', fontSize: '0.85em'}}><a style={{paddingLeft: '0px',paddingTop:'3px'}}class="ui label" onClick={() => sortStatesDataBy("Population", true)}><SortIcon colName='Population' sortOrder={statesDataSortOrder} />Population</a></span></div>
                                 </div>
                             </th>
-                            <th style={{borderLeft: 'none'}} rowSpan="2">
+                            <th className="colTwo" style={{borderLeft: 'none'}} rowSpan="2">
                                 <div>
                                     <div style={{marginBottom: '5px'}}>
                                         <a id="governorLabel" class="ui label" onClick={() => sortStatesDataByGovernmentBranch("Governor")}>
@@ -235,15 +448,20 @@
                     <tbody>
                         {statesRows}
                     </tbody>
-                </table>
-                <p style={{fontSize: '0.8em', float: 'right'}}><span style={{verticalAlign: 'super', fontSize: '0.8em'}}>1</span> As modeled on LANL COVID-19 Cases and Deaths Forecasts</p>
-                <div className="ui pagination menu">
+                    <tfoot>
+                        <tr>
+                            <th colSpan="11" style={{backgroundColor: 'rgba(34,36,38,.1)'}}>
+                        <p style={{fontSize: '0.8em', float: 'right'}}><span style={{verticalAlign: 'super', fontSize: '0.8em'}}>1</span> As modeled on LANL COVID-19 Cases and Deaths Forecasts</p>
+                <div className="ui pagination mini menu">
                     {(visibleRecords.length > 0) ? <a onClick={() => onClickSetPage(1,0,11)} className={'item' + (statePage.number == 1 ? ' active' : '')}>1</a> : ''}
                     {(visibleRecords.length > 12) ? <a onClick={() => onClickSetPage(2,12,23)} className={'item' + (statePage.number == 2 ? ' active' : '')}>2</a> : ''}
                     {(visibleRecords.length > 24) ? <a onClick={() => onClickSetPage(3,24,35)} className={'item' + (statePage.number == 3 ? ' active' : '')}>3</a> : ''}
                     {(visibleRecords.length > 36) ? <a onClick={() => onClickSetPage(4,36,47)} className={'item' + (statePage.number == 4 ? ' active' : '')}>4</a> : ''}
                     {(visibleRecords.length > 48) ? <a onClick={() => onClickSetPage(5,48,59)} className={'item' + (statePage.number == 5 ? ' active' : '')}>5</a> : ''}
-                </div>
+                </div>             
+                </th></tr>
+                    </tfoot>
+                </table>
             </div>
             )
         }
@@ -255,28 +473,26 @@
                 return(
                     <div class="ui grid">
                         <div class="ten wide column">
-                            <h1 class="ui header">
-                                <span style={{marginRight: '10px'}}>COVID <span style={{color: "red"}}>Red</span> and <span style={{color: "blue"}}>Blue</span></span>
+                                <span style={{marginRight: '5px'}}><img valign="middle" src="images/covid_red_and_blue_banner.png" /></span>
                                 <span class="ui green label">Data as of {moment(usRecordsData[0]['Date']).format('LL')}</span>
                                 <a class="ui label black" style={{textDecoration: 'none'}} href='data.html'>
-                                <i class="question circle icon"></i>About the Data
-                            </a>
-                            </h1>                
+                                    <i class="question circle icon"></i>About the Data
+                                </a>
                         </div>
                         <div class="six wide column">
                             <div class="ui secondary menu">
                                 <div class="ui stackable secondary right menu" style={{border: 'none', background: 'none'}}>
-                                    <a class="ui item" href="about.html" style={{color: 'rgba(0,0,0,.77)'}}>
+                                    <a class="horizontally fitted ui item" href="about.html" style={{color: 'rgba(0,0,0,.77)', paddingLeft: '5px', paddingRight: '5px'}}>
                                         <i class="info circle icon"></i> About Us
                                     </a>
-                                    <a style={{color: 'rgba(0,0,0,.87)'}} href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="ui item twitter-share-button" data-show-count="false">
+                                    <a style={{color: 'rgba(0,0,0,.87)', paddingLeft: '5px', paddingRight: '5px'}} href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="horizontally fitted ui item twitter-share-button" data-show-count="false">
                                         <i class="twitter icon"></i> Tweet
                                     </a>
                                     
-                                    <a style={{color: 'rgba(0,0,0,.87)'}} href="https://twitter.com/covidredandblue?ref_src=twsrc%5Etfw" class="ui item twitter-follow-button" data-show-count="false">
+                                    <a style={{color: 'rgba(0,0,0,.87)', paddingLeft: '5px', paddingRight: '5px'}} href="https://twitter.com/covidredandblue?ref_src=twsrc%5Etfw" class="horizontally fitted ui item twitter-follow-button" data-show-count="false">
                                         <i class="at icon"></i> Follow
                                     </a>                         
-                                    <a style={{color: 'rgba(0,0,0,.87)'}} class="ui item" href="mailto:contact@covidredandblue.com">
+                                    <a style={{color: 'rgba(0,0,0,.87)', paddingLeft: '5px', paddingRight: '5px'}} class="horizontally fitted ui item" href="mailto:contact@covidredandblue.com">
                                         <i class="envelope icon"></i> Contact
                                     </a>
                                     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8" />
@@ -284,6 +500,29 @@
                             </div>                
                         </div>
                     </div>
+                )
+            }
+
+            const Footer = () => {
+                return(
+
+                    <div class="ui center aligned container" style={{marginTop: '50px',marginBottom: '50px'}}>
+                        <a href="index.html"><img style={{width: 'auto', height: '30px'}} src="/images/covid_red_and_blue_banner.png" class="ui centered image" /></a>
+                        <div class="ui horizontal small divided link list">
+                            <a style={{textDecoration: 'none'}} class="item" href="data.html" target="_blank">About the Data</a>
+                            <a style={{textDecoration: 'none'}} class="item" href="about.html" target="_blank">About Us</a>
+                            <a style={{textDecoration: 'none', color: 'rgba(0,0,0,.87)', paddingLeft: '5px', paddingRight: '5px'}} href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="horizontally fitted ui item twitter-share-button" data-show-count="false">
+                                <i class="twitter icon"></i> Tweet
+                            </a>
+                            <a style={{textDecoration: 'none', color: 'rgba(0,0,0,.87)', paddingLeft: '5px', paddingRight: '5px'}} href="https://twitter.com/covidredandblue?ref_src=twsrc%5Etfw" class="horizontally fitted ui item twitter-follow-button" data-show-count="false">
+                                <i class="at icon"></i> Follow
+                            </a>                         
+                            <a style={{textDecoration: 'none', color: 'rgba(0,0,0,.87)', paddingLeft: '5px', paddingRight: '5px'}} class="horizontally fitted ui item" href="mailto:contact@covidredandblue.com">
+                                <i class="envelope icon"></i> Contact
+                            </a>
+                        </div>
+                    </div>
+
                 )
             }
 
@@ -318,8 +557,8 @@
 
             // Get the data
 
-            const [error, setError] = React.useState(null);
-            const [isLoaded, setIsLoaded] = React.useState(false);
+            const [usRecordsError, setUsRecordsError] = React.useState(null);
+            const [isUsRecordsLoaded, setIsUsRecordsLoaded] = React.useState(false);
             const [usRecordsData, setUsRecordsData] = React.useState({});
 
             React.useEffect(() => {
@@ -327,31 +566,67 @@
                 .then(res => res.json())
                 .then(
                     (result) => {
-                        setIsLoaded(true);
+                        setIsUsRecordsLoaded(true);
                         setUsRecordsData(result);
                     },
                 (error) => {
-                    setIsLoaded(true);
-                    setError(error);
+                    setIsUsRecordsLoaded(true);
+                    setUsRecordsError(error);
                 })
             }, [])
 
-            if (error) {
-                return <div>Error: {error.message}</div>
+            const [summaryRecordsError, setSummaryRecordsError] = React.useState(null);
+            const [isSummaryRecordsLoaded, setIsSummaryRecordsLoaded] = React.useState(false);
+            const [summaryRecordsData, setSummaryRecordsData] = React.useState({});
+
+            React.useEffect(() => {
+                fetch(`data/summary_records.json?r=${Math.random()}`)
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        setIsSummaryRecordsLoaded(true);
+                        setSummaryRecordsData(result);
+                    },
+                (error) => {
+                    setIsSummaryRecordsLoaded(true);
+                    setSummaryRecordsError(error);
+                })
+            }, [])            
+
+            if (usRecordsError) {
+                return <div>Error: {usRecordsError.message}</div>
             }
-            else if (!isLoaded || (usRecordsData[0] === undefined)) {
+            else if (summaryRecordsError) {
+                return <div>Error: {summaryRecordsError.message}</div>
+            } 
+            else if ( (!isUsRecordsLoaded || (usRecordsData[0] === undefined)) ||
+                      (!isSummaryRecordsLoaded || (summaryRecordsData[0] === undefined))
+                    ) {
                 return (<>Loading...</>)
             }
             else {
+                const usSummaryAttrs = ['US',
+                                        'D_Governor', 'R_Governor',
+                                        'D_Legislature', 'R_Legislature',
+                                        'S_Legislature', 'D_Control',
+                                        'R_Control', 'S_Control'];
+                const usSummaryData = summaryRecordsData.filter(item => usSummaryAttrs.includes(item['State']));
                 return(
                         <>
                             <Heading1 /> 
-                            <h4>The virus is not partisan. Ignoring science can have tragic consequences.</h4> <p>Here are the facts, sorted by 7-day average deaths per 100K population. You can change the sorting. Grey rows indicate split party control of state government.</p>
+                            <h4>The virus is not partisan. Ignoring science can have tragic consequences. Here are the facts.</h4>
                             <SelectCasesOrDeaths /><SelectShowPer100k /><button onClick={onClickReset} style={{float: 'right'}} className='ui button'>Reset</button>
+                            <SummaryTable 
+                                summaryRecordsData={usSummaryData} 
+                                showCasesOrDeaths={casesOrDeaths} 
+                                showPer100k={showPer100k} />  
+                            <br />
+                            <p>The states below are sorted by 7-day average deaths per 100K population. You can change the sorting by clicking on the <i class='sort icon disabled'></i>icons. Grey rows indicate split party control of state government.</p>
                             <StatesTable 
                                 usRecordsData={usRecordsData}
                                 showCasesOrDeaths={casesOrDeaths} 
                                 showPer100k={showPer100k} />
+                            <Footer />                              
                         </>
                 );
             }
