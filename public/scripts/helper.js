@@ -27,11 +27,11 @@ const colSpanCasesAndDeaths = showCasesOrDeaths => ['casesAndDeaths'].includes(s
 
 const rowClassForPartyControl = (partyControl) => { 
     let className;
-    if (partyControl == 'R')
+    if (partyControl == 'R' || partyControl.startsWith('R_'))
         className = 'rowRepublicanControl';
-    else if (partyControl == 'D')
+    else if (partyControl == 'D' || partyControl.startsWith('D_'))
         className = 'rowDemocratControl';
-    else if (partyControl == 'S')
+    else if (partyControl == 'S' || partyControl.startsWith('S_'))
         className = 'rowSplitControl'
     else
         className = 'unknownControl'

@@ -48,6 +48,14 @@ th, td {
     text-align: center;
 }
 
+th.colOne, td.colOne {
+    width: 100px;
+}
+
+th.colTwo, td.colTwo {
+    width: 200px;
+}
+
 th.rowNum {
     background-color: white;
     border-bottom: 1px solid #E1E1E1;

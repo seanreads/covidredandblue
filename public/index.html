@@ -148,7 +148,7 @@
                 return(
                     <tr key={record["State"]} className={rowClassForPartyControl(record["State"])}>
                         <th className="rowNum" style={{width: '30px'}}>{rowNum}</th>
-                        <th style={{width: '350px'}} className="stateName">
+                        <th className="colOne stateName">
                             <div>{formatGroupName(record["State"])}</div>
                             <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(record["Population"],'0,0')}</span></div>
                         </th>
@@ -185,13 +185,13 @@
                 <table className="ui celled table unstackable">
                     <thead>
                         <tr>
-                            <th style={{textAlign: 'left', paddingLeft: '5px'}} colSpan="2" rowSpan="2">
+                            <th className="colOne" style={{textAlign: 'left', paddingLeft: '5px'}} colSpan="2" rowSpan="2">
                                 <div>
-                                    <div style={{marginBottom: '5px'}}>Group</div>
-                                    <div><span style={{fontWeight: 'normal', fontSize: '0.85em'}}>Population</span></div>
+                                    <div style={{paddingLeft:'10px', marginBottom: '5px'}}>Group</div>
+                                    <div><span style={{paddingLeft:'10px', fontWeight: 'normal', fontSize: '0.85em'}}>Population</span></div>
                                 </div>
                             </th>
-                            <th style={{borderLeft: 'none', width: '250px'}} rowSpan="2">
+                            <th className="colTwo" style={{borderLeft: 'none'}} rowSpan="2">
                                 <div>
                                     <div style={{marginBottom: '5px'}}>
                                         <a id="governorLabel" class="ui label">
@@ -338,7 +338,7 @@
                 return(
                     <tr key={record["State"]} className={rowClassForPartyControl(record["Control"])}>
                         <th className="rowNum" style={{width: '30px'}}>{rowNum}</th>
-                        <th style={{width: '50px'}} className="stateName">
+                        <th className="colOne stateName">
                             <div>{record["State"]}</div>
                             <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(record["Population"],'0,0')}</span></div>
                         </th>
@@ -403,13 +403,13 @@
                             </th>
                         </tr>
                         <tr>
-                            <th style={{textAlign: 'left', paddingLeft: '5px'}} colSpan="2" rowSpan="2">
+                            <th className="colOne" style={{textAlign: 'left', paddingLeft: '5px'}} colSpan="2" rowSpan="2">
                                 <div>
                                     <div style={{marginBottom: '5px'}}><a class="ui label" style={{paddingLeft: '0px', fontSize: '14px', fontWeight: 'strong !important'}} onClick={() => sortStatesDataBy("State", true)}><SortIcon colName='State' sortOrder={statesDataSortOrder} />State</a> </div>
                                     <div><span style={{fontWeight: 'normal', fontSize: '0.85em'}}><a style={{paddingLeft: '0px',paddingTop:'3px'}}class="ui label" onClick={() => sortStatesDataBy("Population", true)}><SortIcon colName='Population' sortOrder={statesDataSortOrder} />Population</a></span></div>
                                 </div>
                             </th>
-                            <th style={{borderLeft: 'none', width: '250px'}} rowSpan="2">
+                            <th className="colTwo" style={{borderLeft: 'none'}} rowSpan="2">
                                 <div>
                                     <div style={{marginBottom: '5px'}}>
                                         <a id="governorLabel" class="ui label" onClick={() => sortStatesDataByGovernmentBranch("Governor")}>
