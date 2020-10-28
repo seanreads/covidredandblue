@@ -602,7 +602,7 @@
             const [summaryRecordsData, setSummaryRecordsData] = React.useState({});
 
             React.useEffect(() => {
-                fetch(`data/summary_records_NEW.json?r=${Math.random()}`)
+                fetch(`data/summary_records.json?r=${Math.random()}`)
                 .then(res => res.json())
                 .then(
                     (result) => {
