@@ -112,17 +112,14 @@ const govtRowShowHide = (record, govtRowShowHide) => {
 }
 
 const govtSummaryRowShowHide = (record, govtRowShowHide) => {
-
     let showRow = true;
     
-    if ((['D_Governor', 'D_Control'].includes(record['State'])) && govtRowShowHide['showDemocratGovernors'] == false) 
+    if (record['State'].endsWith('_Governor') && govtRowShowHide['showGovernors'] == false) 
         showRow = false;
-    if ((['R_Governor', 'R_Control'].includes(record['State'])) && govtRowShowHide['showRepublicanGovernors'] == false) 
-        showRow = false;        
-    if ((['D_Legislature', 'D_Control'].includes(record['State'])) && govtRowShowHide['showDemocratLegislatures'] == false)
-        showRow = false;
-    if ((['R_Legislature', 'R_Control'].includes(record['State'])) && govtRowShowHide['showRepublicanLegislatures'] == false)
-        showRow = false;        
+    if (record['State'].endsWith('_Legislature') && govtRowShowHide['showLegislatures'] == false) 
+        showRow = false;     
+    if (record['State'].endsWith('_Control') && govtRowShowHide['showStateControl'] == false) 
+        showRow = false;       
 
     return showRow;
 }
