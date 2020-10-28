@@ -327,7 +327,7 @@
                 return(
                     <tr key={record["State"]} className={rowClassForPartyControl(record["Control"])}>
                         <th className="rowNum" style={{width: '30px'}}>{rowNum}</th>
-                        <th className="colOne stateName">
+                        <th className="colOne stateName" style={{width: '150px'}}>
                             <div>{record["State"]}</div>
                             <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(record["Population"],'0,0')}</span></div>
                         </th>
