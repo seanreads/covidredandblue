@@ -134,12 +134,6 @@
                 return(icons)
             }
 
-            // const [showRepublicanGovernors, setShowRepublicanGovernors] = React.useState(true);
-            // const [showDemocratGovernors, setShowDemocratGovernors] = React.useState(true);
-            // const [showRepublicanLegislatures, setShowRepublicanLegislatures] = React.useState(true);
-            // const [showDemocratLegislatures, setShowDemocratLegislatures] = React.useState(true);
-            //const govtRowShowHideInfo = {showRepublicanGovernors, showDemocratGovernors, showDemocratLegislatures, showRepublicanLegislatures}
-
             const [showGovernors, setShowGovernors] = React.useState(true);
             const [showLegislatures, setShowLegislatures] = React.useState(false);
             const [showStateControl, setShowStateControl] = React.useState(false);
@@ -148,12 +142,9 @@
 
             const visibleRecords = summaryData.filter(record => govtSummaryRowShowHide(record, govtRowShowHideInfo));
 
-            let rowNum = 0;
             const summaryRows = visibleRecords.map((record) => { 
-                rowNum += 1;
                 return(
                     <tr key={record["State"]} className={rowClassForPartyControl(record["State"])}>
-                        <th className="rowNum" style={{width: '30px'}}>{rowNum}</th>
                         <th className="colOne stateName">
                             <div>{formatGroupName(record["State"])}</div>
                             <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(record["Population"],'0,0')}</span></div>
@@ -171,19 +162,6 @@
                         <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[totalCasesKey],'0,0')}</td>
                     </tr>); 
             });
-
-            // const onClickShowRepublicanGovernors = () => { 
-            //     setShowRepublicanGovernors(!showRepublicanGovernors);
-            // }
-            // const onClickShowDemocratGovernors = () => {
-            //     setShowDemocratGovernors(!showDemocratGovernors);
-            // }
-            // const onClickShowRepublicanLegislatures = () => {
-            //     setShowRepublicanLegislatures(!showRepublicanLegislatures);
-            // }
-            // const onClickShowDemocratLegislatures = () => {
-            //     setShowDemocratLegislatures(!showDemocratLegislatures);
-            // }
 
             const onClickShowGovernors = () => {
                 setShowGovernors(true);
@@ -209,7 +187,7 @@
                 <table className="ui celled table unstackable">
                     <thead>
                         <tr>
-                            <th className="colOne" style={{textAlign: 'left', paddingLeft: '5px'}} colSpan="2" rowSpan="2">
+                            <th className="colOne" style={{textAlign: 'left', paddingLeft: '5px'}} rowSpan="2">
                                 <div>
                                     <div style={{paddingLeft:'10px', marginBottom: '5px'}}>Group</div>
                                     <div><span style={{paddingLeft:'10px', fontWeight: 'normal', fontSize: '0.85em'}}>Population</span></div>
@@ -402,17 +380,6 @@
 
                 <table className="ui celled table unstackable">
                     <thead>
-                        <tr>
-                            <th colSpan="11" style={{backgroundColor: 'rgba(34,36,38,.1)'}}>
-                                <div className="ui mini pagination menu">
-                                    {(visibleRecords.length > 0) ? <a onClick={() => onClickSetPage(1,0,11)} className={'item' + (statePage.number == 1 ? ' active' : '')}>1</a> : ''}
-                                    {(visibleRecords.length > 12) ? <a onClick={() => onClickSetPage(2,12,23)} className={'item' + (statePage.number == 2 ? ' active' : '')}>2</a> : ''}
-                                    {(visibleRecords.length > 24) ? <a onClick={() => onClickSetPage(3,24,35)} className={'item' + (statePage.number == 3 ? ' active' : '')}>3</a> : ''}
-                                    {(visibleRecords.length > 36) ? <a onClick={() => onClickSetPage(4,36,47)} className={'item' + (statePage.number == 4 ? ' active' : '')}>4</a> : ''}
-                                    {(visibleRecords.length > 48) ? <a onClick={() => onClickSetPage(5,48,59)} className={'item' + (statePage.number == 5 ? ' active' : '')}>5</a> : ''}
-                                </div>
-                            </th>
-                        </tr>
                         <tr>
                             <th className="colOne" style={{textAlign: 'left', paddingLeft: '5px'}} colSpan="2" rowSpan="2">
                                 <div>
