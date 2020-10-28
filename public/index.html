@@ -146,7 +146,7 @@
                 return(
                     <tr key={record["State"]} className={rowClassForPartyControl(record["State"])}>
                         <th className="colOne stateName">
-                            <div>{formatGroupName(record["State"])}</div>
+                            <div>{formatGroupName(record["State"])}{(record["State"] == 'US') ? (<a class="ui mini label" data-position="top left" data-variation="basic" data-tooltip="United States totals include territories not captured in the party aggregation below, e.g. Puerto Rico, Guam, the US Virgin Islands, and the Northern Mariana Islands." style={{verticalAlign: 'super'}}>2</a>) : ''}</div>
                             <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(record["Population"],'0,0')}</span></div>
                         </th>
                         <td style={{borderLeft: 'none'}} className="governmentBranch">
@@ -244,7 +244,14 @@
                     <tfoot>
                         <tr>
                             <th colSpan="11" style={{backgroundColor: 'rgba(34,36,38,.1)'}}>
-                                <p style={{fontSize: '0.8em', float: 'right'}}><span style={{verticalAlign: 'super', fontSize: '0.8em'}}>1</span> As modeled on LANL COVID-19 Cases and Deaths Forecasts</p>
+                                <div style={{float: 'right'}}>
+                                    <div style={{fontSize: '0.8em'}}>
+                                        <span style={{verticalAlign: 'super', fontSize: '0.8em'}}>1</span> As modeled on LANL COVID-19 Cases and Deaths Forecasts
+                                    </div>
+                                    <div style={{fontSize: '0.8em'}}>
+                                        <span style={{verticalAlign: 'super', fontSize: '0.8em'}}>2</span> United States totals include territories not captured in the party aggregation below, <br />e.g. Puerto Rico, Guam, the US Virgin Islands, and the Northern Mariana Islands.
+                                    </div>
+                                </div>
                             </th></tr>
                     </tfoot>
                 </table>
