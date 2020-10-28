@@ -34,16 +34,7 @@
         <script src="scripts/helper.js"></script>
         <script type="text/babel">
         function SummaryTable({summaryRecordsData, showCasesOrDeaths, showPer100k}) {
-            const sortSummaryDataBy = (prop, ascending = true) => {
-                const propSortOrder = (prop in summaryDataSortOrder) ? {[prop]: !summaryDataSortOrder[prop]} : {[prop]: ascending};
-                setSummaryDataSortOrder({...propSortOrder});
-                let sortedData = [...summaryData].sort((a, b) => a[prop] > b[prop] ? 1 : -1);
-                if (propSortOrder[prop] == false) sortedData.reverse();
-                setSummaryData(sortedData);
-            };
             const [summaryData, setSummaryData] = React.useState(summaryRecordsData);
-            const [summaryDataSortOrder, setSummaryDataSortOrder] = React.useState({});
-            if (Object.keys(summaryDataSortOrder).length === 0) sortSummaryDataBy('NewDeaths_7da_100k', false);
             const [show7DayAvg, setShow7DayAvg] = React.useState(true);
             const onClickShowSevenDayAvg = value => setShow7DayAvg(value); 
             const newCasesKey = getNewCasesKey(showPer100k, show7DayAvg);
@@ -87,32 +78,83 @@
             }
             const formatGroupName = name => {
                 let formatted;
-                if (name == 'R') {
-                    formatted = 'Republican States' 
+                if (name == 'D_Governor') {
+                    formatted = 'Democrat Governor' 
                 }
-                else if (name == 'D') {
-                    formatted = 'Democratic States' 
+                else if (name == 'R_Governor') {
+                    formatted = 'Republican Governor'
+                } else if (name == 'D_Legislature') { 
+                    formatted = 'Democrat Legislature'
+                } else if (name == 'R_Legislature') {
+                    formatted = 'Republican Legislature'
+                } else if (name == 'S_Legislature') {
+                    formatted = 'Split Legislature'
+                } else if (name == 'D_Control') {
+                    formatted = 'Democrat-controlled States'
+                } else if (name == 'R_Control') {
+                    formatted = 'Republican-controlled States'                    
+                } else if (name == 'S_Control') {
+                    formatted = 'Split-controlled States'                  
                 } else if (name == 'US') {
                     formatted = 'United States'
-                } else if(name == 'EU') {
-                    formatted = 'European Union'
                 } else {
                     formatted = name;
                 }
                 return formatted;
             }
 
-            const summaryDataParties = summaryData.filter(item => ['D','R'].includes(item['State']));
+            const SummaryRowIcons = ({state}) => {
+                let icons = '';
+                if (state == 'R_Governor')
+                    icons = <i aria-hidden="true" className="redGovernor user big icon"></i>;
+                else if (state == 'D_Governor')
+                    icons = <i aria-hidden="true" className="blueGovernor user big icon"></i>;
+                else if (state == 'R_Legislature')
+                    icons = <i aria-hidden="true" className="redLegislature university big icon"></i>;
+                else if (state == 'D_Legislature')
+                    icons = <i aria-hidden="true" className="blueLegislature university big icon"></i>;
+                else if (state == 'S_Legislature')
+                    icons = <i aria-hidden="true" className="grayLegislature university big icon"></i>;
+                else if (state == 'R_Control')
+                    icons = <><i aria-hidden="true" className="redGovernor user big icon"></i>
+                                <i aria-hidden="true" className="redLegislature university big icon"></i>
+                            </>; 
+                else if (state == 'D_Control')
+                    icons = <><i aria-hidden="true" className="blueGovernor user big icon"></i>
+                                <i aria-hidden="true" className="blueLegislature university big icon"></i>
+                            </>; 
+                else if (state == 'S_Control')
+                    icons = <><i aria-hidden="true" className="grayGovernor user big icon"></i>
+                                <i aria-hidden="true" className="grayLegislature university big icon"></i>
+                            </>;                                                                
+                else if (state == 'US')
+                    icons = <><img src='images/usa_flag_color-300x160.png' style={{width: '35px'}} /></>
+                else
+                    icons = ''
+                return(icons)
+            }
 
-            const footnote = {R: {partyName: 'Republican', number: '2'}, D: {partyName: 'Democratic', number: '3'}};
+            const [showRepublicanGovernors, setShowRepublicanGovernors] = React.useState(true);
+            const [showDemocratGovernors, setShowDemocratGovernors] = React.useState(true);
+            const [showRepublicanLegislatures, setShowRepublicanLegislatures] = React.useState(true);
+            const [showDemocratLegislatures, setShowDemocratLegislatures] = React.useState(true);
+            const govtRowShowHideInfo = {showRepublicanGovernors, showDemocratGovernors, showDemocratLegislatures, showRepublicanLegislatures}
 
-            const summaryRows = summaryDataParties.map((record) => { 
+            const visibleRecords = summaryData.filter(record => govtSummaryRowShowHide(record, govtRowShowHideInfo));
+
+            let rowNum = 0;
+            const summaryRows = visibleRecords.map((record) => { 
+                rowNum += 1;
                 return(
                     <tr key={record["State"]} className={rowClassForPartyControl(record["State"])}>
+                        <th className="rowNum" style={{width: '30px'}}>{rowNum}</th>
                         <th style={{width: '350px'}} className="stateName">
-                            <div>{formatGroupName(record["State"])}<a class="ui mini label" data-tooltip={`Data is for all states with ${footnote[record["State"]]['partyName']} legislatures`} style={{verticalAlign: 'super'}}>{footnote[record["State"]]['number']}</a></div>
+                            <div>{formatGroupName(record["State"])}</div>
                             <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(record["Population"],'0,0')}</span></div>
                         </th>
+                        <td style={{borderLeft: 'none'}} className="governmentBranch">
+                            <SummaryRowIcons state={record["State"]} />
+                        </td>                        
                         <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsKey],'0,0')}</td>
                         <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(record[newCasesKey],'0,0')}</td>
                         <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(record[newDeathsPrevWeeksKey],'0,0')}</td>
@@ -124,48 +166,53 @@
                     </tr>); 
             });
 
-            const usSummaryData = summaryData.filter(item => item['State'] === 'US')[0];
-
-            const usSummaryRow = (
-                <tr key={usSummaryData["State"]}>
-                        <th style={{width: '380px'}} className="stateName">
-                            <div>{formatGroupName(usSummaryData["State"])}</div>
-                            <div className="populationLabel">Pop. <span className="populationNumber">{formatNumber(usSummaryData["Population"],'0,0')}</span></div>
-                        </th>
-                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(usSummaryData[newDeathsKey],'0,0')}</td>
-                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(usSummaryData[newCasesKey],'0,0')}</td>
-                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(usSummaryData[newDeathsPrevWeeksKey],'0,0')}</td>
-                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(usSummaryData[newCasesPrevWeeksKey],'0,0')}</td>
-                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(usSummaryData[newDeathsNextWeeksKey],'0,0')}</td>
-                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(usSummaryData[newCasesNextWeeksKey],'0,0')}</td>
-                        <td className={'center aligned colCellDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>{formatNumber(usSummaryData[totalDeathsKey],'0,0')}</td>
-                        <td className={'center aligned colCellCases ' + showOrHideCases(showCasesOrDeaths)}>{formatNumber(usSummaryData[totalCasesKey],'0,0')}</td>
-                    </tr>)
-    
-            const SortIcon = ({colName, sortOrder, arrowStyle = 'amount'}) => {
-                let classes = 'sort icon disabled';
-                if (sortOrder.hasOwnProperty(colName)) {
-                    if (sortOrder[colName] == true) {
-                        classes = 'sort icon up';
-                    }
-                    else if (sortOrder[colName] == false) {
-                        classes = 'sort icon down';
-                    } 
-                }  
-                return(<i style={{textDecoration: 'none'}} className={classes}></i>); 
+            const onClickShowRepublicanGovernors = () => { 
+                setShowRepublicanGovernors(!showRepublicanGovernors);
             }
+            const onClickShowDemocratGovernors = () => {
+                setShowDemocratGovernors(!showDemocratGovernors);
+            }
+            const onClickShowRepublicanLegislatures = () => {
+                setShowRepublicanLegislatures(!showRepublicanLegislatures);
+            }
+            const onClickShowDemocratLegislatures = () => {
+                setShowDemocratLegislatures(!showDemocratLegislatures);
+            }
+    
             return (
                 <div>
 
                 <table className="ui celled table unstackable">
                     <thead>
                         <tr>
-                            <th style={{textAlign: 'left', paddingLeft: '5px'}} rowSpan="2">
+                            <th style={{textAlign: 'left', paddingLeft: '5px'}} colSpan="2" rowSpan="2">
                                 <div>
-                                    <div style={{marginBottom: '5px'}}><a class="ui label" style={{paddingLeft: '0px', fontSize: '14px', fontWeight: 'strong !important'}} onClick={() => sortSummaryDataBy("State", true)}><SortIcon colName='State' sortOrder={summaryDataSortOrder} />Group</a> </div>
-                                    <div><span style={{fontWeight: 'normal', fontSize: '0.85em'}}><a style={{paddingLeft: '0px',paddingTop:'3px'}}class="ui label" onClick={() => sortSummaryDataBy("Population", true)}><SortIcon colName='Population' sortOrder={summaryDataSortOrder} />Population</a></span></div>
+                                    <div style={{marginBottom: '5px'}}>Group</div>
+                                    <div><span style={{fontWeight: 'normal', fontSize: '0.85em'}}>Population</span></div>
                                 </div>
                             </th>
+                            <th style={{borderLeft: 'none', width: '250px'}} rowSpan="2">
+                                <div>
+                                    <div style={{marginBottom: '5px'}}>
+                                        <a id="governorLabel" class="ui label">
+                                            <i class="user icon"></i>Governor
+                                        </a>
+                                        <span style={{marginLeft: '8px'}} class="ui buttons">
+                                            <button onClick={onClickShowDemocratGovernors} style={{fontSize: '10px'}} class={`govt democrat ui button` + (showDemocratGovernors == true ? ' active' : ' inactive')}>D</button>
+                                            <button onClick={onClickShowRepublicanGovernors} style={{fontSize: '10px'}} class={`govt republican ui button` + (showRepublicanGovernors == true ? ' active' : ' inactive')}>R</button>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <a id="legislatureLabel" class="ui label">
+                                            <i class="university icon"></i>Legislature
+                                        </a>
+                                        <span class="ui buttons">
+                                            <button onClick={onClickShowDemocratLegislatures} style={{fontSize: '10px'}} class={`govt democrat ui button` + (showDemocratLegislatures == true ? ' active' : ' inactive')}>D</button>
+                                            <button onClick={onClickShowRepublicanLegislatures} style={{fontSize: '10px'}} class={`govt republican ui button` + (showRepublicanLegislatures == true ? ' active' : ' inactive')}>R</button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </th>                            
                             <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}><div style={{marginBottom: '3px'}}>Daily New</div> <div><SelectSevenDayAverage /></div></th>
                             <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Past <SelectPastNumberOfWeeks /> Week{pastNumberOfWeeks > 1 ? 's' : ''}</th>
                             <th className="colHeadsOne center aligned" colSpan={colSpanCasesAndDeaths(showCasesOrDeaths)}>Next {pastNumberOfWeeks} Week{pastNumberOfWeeks > 1 ? 's' : ''}<a class="ui mini label" data-tooltip="As modeled on LANL COVID-19 Cases and Deaths Forecasts" style={{verticalAlign: 'super'}}>1</a></th>
@@ -173,47 +220,42 @@
                         </tr>
                         <tr>
                             <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
-                                <a onClick={() => sortSummaryDataBy(newDeathsKey, false)}><SortIcon colName={newDeathsKey} sortOrder={summaryDataSortOrder} />Deaths</a>
+                                Deaths
                             </th>
                             <th style={{borderLeft: '1px dotted #E1E1E1'}} className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
-                                <a onClick={() => sortSummaryDataBy(newCasesKey, false)}><SortIcon colName={newCasesKey} sortOrder={summaryDataSortOrder} />Cases</a>
+                                Cases
                             </th>
 
                             <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
-                                <a onClick={() => sortSummaryDataBy(newDeathsPrevWeeksKey, false)}><SortIcon colName={newDeathsPrevWeeksKey} sortOrder={summaryDataSortOrder} />Deaths</a>
+                                Deaths
                             </th>
                             <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
-                                <a onClick={() => sortSummaryDataBy(newCasesPrevWeeksKey, false)}><SortIcon colName={newCasesPrevWeeksKey} sortOrder={summaryDataSortOrder} />Cases</a>
+                                Cases
                             </th>
 
                             <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
-                                <a onClick={() => sortSummaryDataBy(newDeathsNextWeeksKey, false)}><SortIcon colName={newDeathsNextWeeksKey} sortOrder={summaryDataSortOrder} />Deaths</a>
+                                Deaths
                             </th>
                             <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
-                                <a onClick={() => sortSummaryDataBy(newCasesNextWeeksKey, false)}><SortIcon colName={newCasesNextWeeksKey} sortOrder={summaryDataSortOrder} />Cases</a>
+                                Cases
                             </th>
 
                             <th className={'center aligned colHeadsDeaths ' + showOrHideDeaths(showCasesOrDeaths)}>
-                                <a onClick={() => sortSummaryDataBy(totalDeathsKey, false)}><SortIcon colName={totalDeathsKey} sortOrder={summaryDataSortOrder} />Deaths</a>
+                                Deaths
                             </th>
                             <th className={'center aligned colHeadsCases ' + showOrHideCases(showCasesOrDeaths)}>
-                                <a onClick={() => sortSummaryDataBy(totalCasesKey, false)}><SortIcon colName={totalCasesKey} sortOrder={summaryDataSortOrder} />Cases</a>
+                                Cases
                             </th>
 
                         </tr>                      
                     </thead>
                     <tbody>
                         {summaryRows}
-                        {usSummaryRow}
                     </tbody>
                     <tfoot>
                         <tr>
                             <th colSpan="11" style={{backgroundColor: 'rgba(34,36,38,.1)'}}>
-                                <div style={{float: 'right'}}>
-                                    <div style={{fontSize: '0.8em'}}><span style={{verticalAlign: 'super', fontSize: '0.8em'}}>1</span> As modeled on LANL COVID-19 Cases and Deaths Forecasts</div>
-                                    <div style={{fontSize: '0.8em'}}><span style={{verticalAlign: 'super', fontSize: '0.8em'}}>2</span> Data is for all states with Republican legislatures</div>
-                                    <div style={{fontSize: '0.8em'}}><span style={{verticalAlign: 'super', fontSize: '0.8em'}}>3</span> Data is for all states with Democratic legislatures</div>
-                                </div>
+                                <p style={{fontSize: '0.8em', float: 'right'}}><span style={{verticalAlign: 'super', fontSize: '0.8em'}}>1</span> As modeled on LANL COVID-19 Cases and Deaths Forecasts</p>
                             </th></tr>
                     </tfoot>
                 </table>
@@ -453,13 +495,11 @@
                 return(
                     <div class="ui grid">
                         <div class="ten wide column">
-                            <h1 class="ui header">
-                                <span style={{marginRight: '10px'}}>COVID <span style={{color: "red"}}>Red</span> and <span style={{color: "blue"}}>Blue</span></span>
+                                <span style={{marginRight: '5px'}}><img valign="middle" src="images/covid_red_and_blue_banner.png" /></span>
                                 <span class="ui green label">Data as of {moment(usRecordsData[0]['Date']).format('LL')}</span>
                                 <a class="ui label black" style={{textDecoration: 'none'}} href='data.html'>
-                                <i class="question circle icon"></i>About the Data
-                            </a>
-                            </h1>                
+                                    <i class="question circle icon"></i>About the Data
+                                </a>
                         </div>
                         <div class="six wide column">
                             <div class="ui secondary menu">
@@ -489,6 +529,7 @@
                 return(
 
                     <div class="ui center aligned container" style={{marginTop: '50px',marginBottom: '50px'}}>
+                        <a href="index.html"><img style={{width: 'auto', height: '30px'}} src="/images/covid_red_and_blue_banner.png" class="ui centered image" /></a>
                         <div class="ui horizontal small divided link list">
                             <a style={{textDecoration: 'none'}} class="item" href="data.html" target="_blank">About the Data</a>
                             <a style={{textDecoration: 'none'}} class="item" href="about.html" target="_blank">About Us</a>
@@ -561,7 +602,7 @@
             const [summaryRecordsData, setSummaryRecordsData] = React.useState({});
 
             React.useEffect(() => {
-                fetch(`data/summary_records.json?r=${Math.random()}`)
+                fetch(`data/summary_records_NEW.json?r=${Math.random()}`)
                 .then(res => res.json())
                 .then(
                     (result) => {
@@ -586,18 +627,23 @@
                 return (<>Loading...</>)
             }
             else {
-                const usSummaryData = summaryRecordsData.filter(item => ['D', 'R', 'US'].includes(item['State']));
+                const usSummaryAttrs = ['US',
+                                        'D_Governor', 'R_Governor',
+                                        'D_Legislature', 'R_Legislature',
+                                        'S_Legislature', 'D_Control',
+                                        'R_Control', 'S_Control'];
+                const usSummaryData = summaryRecordsData.filter(item => usSummaryAttrs.includes(item['State']));
                 return(
                         <>
                             <Heading1 /> 
-                            <h4>The virus is not partisan. Ignoring science can have tragic consequences.</h4> <p>Here are the facts, sorted by 7-day average deaths per 100K population. You can change the sorting.</p>
+                            <h4>The virus is not partisan. Ignoring science can have tragic consequences. Here are the facts.</h4>
                             <SelectCasesOrDeaths /><SelectShowPer100k /><button onClick={onClickReset} style={{float: 'right'}} className='ui button'>Reset</button>
                             <SummaryTable 
                                 summaryRecordsData={usSummaryData} 
                                 showCasesOrDeaths={casesOrDeaths} 
                                 showPer100k={showPer100k} />  
                             <br />
-                            <p>Below, grey rows indicate split party control of state government.</p>
+                            <p>The states below are sorted by 7-day average deaths per 100K population. You can change the sorting by clicking on the <i class='sort icon disabled'></i>icons. Grey rows indicate split party control of state government.</p>
                             <StatesTable 
                                 usRecordsData={usRecordsData}
                                 showCasesOrDeaths={casesOrDeaths} 

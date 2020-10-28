@@ -111,6 +111,22 @@ const govtRowShowHide = (record, govtRowShowHide) => {
     return showRow;
 }
 
+const govtSummaryRowShowHide = (record, govtRowShowHide) => {
+
+    let showRow = true;
+    
+    if ((['D_Governor', 'D_Control'].includes(record['State'])) && govtRowShowHide['showDemocratGovernors'] == false) 
+        showRow = false;
+    if ((['R_Governor', 'R_Control'].includes(record['State'])) && govtRowShowHide['showRepublicanGovernors'] == false) 
+        showRow = false;        
+    if ((['D_Legislature', 'D_Control'].includes(record['State'])) && govtRowShowHide['showDemocratLegislatures'] == false)
+        showRow = false;
+    if ((['R_Legislature', 'R_Control'].includes(record['State'])) && govtRowShowHide['showRepublicanLegislatures'] == false)
+        showRow = false;        
+
+    return showRow;
+}
+
 const getRowColorForGovernor = record => {
     let governorColor = 'gray';
     if (record['Governor'] == 'R')
@@ -127,4 +143,22 @@ const getRowColorForLegislature = record => {
     else if (record['Legislature'] == 'D')
         legislatureColor = 'blue';
     return legislatureColor;
+}
+
+const govtIconClassName = state => {
+    let className = '';
+    if (state == 'R_Governor')
+        className = 'redGovernor user big icon';
+    else if (state == 'D_Governor')
+        className = 'blueGovernor user big icon'
+    else if (state == 'R_Legislature')
+        className = 'redLegislature university big icon'        
+    else if (state == 'D_Legislature')
+        className = 'blueLegislature university big icon'
+    else if (state == 'S_Legislature')
+        className = 'grayLegislature university big icon'
+    else if (state == 'US') 
+        className = ''     
+
+    return className;
 }
