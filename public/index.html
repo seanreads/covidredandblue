@@ -134,8 +134,8 @@
                 return(icons)
             }
 
-            const [showGovernors, setShowGovernors] = React.useState(true);
-            const [showLegislatures, setShowLegislatures] = React.useState(false);
+            const [showGovernors, setShowGovernors] = React.useState(false);
+            const [showLegislatures, setShowLegislatures] = React.useState(true);
             const [showStateControl, setShowStateControl] = React.useState(false);
 
             const govtRowShowHideInfo = {showGovernors, showLegislatures, showStateControl}
@@ -196,8 +196,8 @@
                             <th className="colTwo" style={{borderLeft: 'none'}} rowSpan="2">
                                 <div>
                                     <div id="toggleGovernmentMenu" class="ui buttons vertical">
-                                        <button onClick={onClickShowGovernors} class={`ui button` + (showGovernors ? ' active' : '')}><i class="user icon"></i>Governor</button>
                                         <button onClick={onClickShowLegislatures} class={`ui button` + (showLegislatures ? ' active' : '')}><i class="university icon"></i>Legislature</button>
+                                        <button onClick={onClickShowGovernors} class={`ui button` + (showGovernors ? ' active' : '')}><i class="user icon"></i>Governor</button>                                        
                                         <button onClick={onClickShowStateControl} class={`ui button` + (showStateControl ? ' active' : '')}><i class="flag icon"></i>State Control</button>
                                     </div>
                                 </div>
