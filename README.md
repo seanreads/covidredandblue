@@ -25,7 +25,7 @@ git tag 2020-10-18
 git push --atomic origin main 2020-10-18
 ```
 
-4. At this point, a Github action will run to update the website. You can monitor the status of the action at https://github.com/seanreads/covidredandblue/actions. Once the action successfully completes (~1 minute), the new data should appear on the website: https://covidredandblue.com
+4. At this point, a Github action will run to update the website. You can monitor the status of the action at https://github.com/seanreads/covidredandblue/actions. Once the action successfully completes (~1 minute), the new data should appear on the website: https://archive.covidredandblue.com
 
 ## Troubleshooting
 
